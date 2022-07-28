@@ -188,10 +188,113 @@
         line: \1 /base/images/cd2-logo.svg
         backrefs: yes
 
+    - name: Install ckanext-fluent extension
+      become: yes
+      ansible.builtin.pip:
+        name: git+https://github.com/ckan/ckanext-fluent.git#egg=ckanext-fluent
+        virtualenv: /usr/lib/ckan/default
+        editable: yes
+
+    - name: Install ckanext-dcat extension
+      become: yes
+      ansible.builtin.pip:
+        name: git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat
+        virtualenv: /usr/lib/ckan/default
+        editable: yes
+
+    - name: Install ckanext-dcat requirements
+      become: yes
+      ansible.builtin.pip:
+        requirements: /usr/lib/ckan/default/src/ckanext-dcat/requirements.txt
+        virtualenv: /usr/lib/ckan/default
+      register: bla
+
+    - name: print
+      ansible.builtin.debug:
+        var: bla
+
+    - name: Install ckanext-hierarchy extension # MAYBE NEEDS TO BE THE OPENDATASWISS FORK
+      become: yes
+      ansible.builtin.pip:
+        name: git+https://github.com/ckan/ckanext-hierarchy.git#egg=ckanext-hierarchy
+        virtualenv: /usr/lib/ckan/default
+        editable: yes
+
+    - name: Install ckanext-harvest extension
+      become: yes
+      ansible.builtin.pip:
+        name: git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest
+        virtualenv: /usr/lib/ckan/default
+        editable: yes
+
+    - name: Install ckanext-xloader extension
+      become: yes
+      ansible.builtin.pip:
+        name: git+https://github.com/ckan/ckanext-xloader.git#egg=ckanext-xloader
+        virtualenv: /usr/lib/ckan/default
+        editable: yes
+
     - name: Install ckanext-scheming extension
       become: yes
       ansible.builtin.pip:
         name: git+https://github.com/ckan/ckanext-scheming.git#egg=ckanext-scheming
+        virtualenv: /usr/lib/ckan/default
+        editable: yes
+
+    - name: Install ckanext-dcatapchharvest extension
+      become: yes
+      ansible.builtin.pip:
+        name: git+https://github.com/opendata-swiss/ckanext-dcatapchharvest#egg=ckanext-dcatapchharvest
+        virtualenv: /usr/lib/ckan/default
+        editable: yes
+
+    - name: Install pip-upgrader
+      become: yes
+      ansible.builtin.pip:
+        name: pip-upgrader
+        virtualenv: /usr/lib/ckan/default
+
+    - name: Upgrade iribaker requirement of ckanext-dcatapchharvest to latest version
+      become: yes
+      ansible.builtin.command: /usr/lib/ckan/default/bin/pip-upgrade /usr/lib/ckan/default/src/ckanext-dcatapchharvest/requirements.txt -p iribaker
+
+    - name: Install ckanext-dcatapchharvest requirements
+      become: yes
+      ansible.builtin.pip:
+        requirements: /usr/lib/ckan/default/src/ckanext-dcatapchharvest/requirements.txt
+        virtualenv: /usr/lib/ckan/default
+      register: bla
+
+    - name: print
+      ansible.builtin.debug:
+        var: bla
+
+    - name: Install ckanext-switzerland-ng extension
+      become: yes
+      ansible.builtin.pip:
+        name: git+https://github.com/opendata-swiss/ckanext-switzerland-ng#egg=ckanext-switzerland
+        virtualenv: /usr/lib/ckan/default
+        editable: yes
+
+    - name: Upgrade pandas requirement of ckanext-switzerland-ng to latest version
+      become: yes
+      ansible.builtin.command: /usr/lib/ckan/default/bin/pip-upgrade /usr/lib/ckan/default/src/ckanext-switzerland/requirements.txt -p pandas -p iribaker
+
+    - name: Install ckanext-switzerland-ng requirements
+      become: yes
+      ansible.builtin.pip:
+        requirements: /usr/lib/ckan/default/src/ckanext-switzerland/requirements.txt
+        virtualenv: /usr/lib/ckan/default
+      register: swissout
+
+    - name: print
+      ansible.builtin.debug:
+        var: swissout
+
+    - name: Install ckanext-showcase extension
+      become: yes
+      ansible.builtin.pip:
+        name: git+https://github.com/opendata-swiss/ckanext-showcase#egg=ckanext-showcase
         virtualenv: /usr/lib/ckan/default
         editable: yes
 
@@ -249,7 +352,8 @@
         path: /etc/ckan/default/ckan.ini
         backrefs: yes
         regexp: ^(ckan\.plugins = .* recline_view).*$
-        line: \1 msl_ckan scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields
+          #line: \1 msl_ckan scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields ogdch showcase fluent
+        line: \1 scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields ogdch showcase fluent
 
     - name: Add msl_ckan specific field definitions to the Solr schema
       become: yes
