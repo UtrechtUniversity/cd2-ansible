@@ -1,0 +1,65 @@
+---
+# copyright Utrecht University
+
+# CD2 configuration
+cd2_version: development          # CD2 playbook version to install
+ckan_fqdn: cd2.ckan.test           # CKAN version fully qualified domain name (FQDN)
+ckan_port: 8080
+solr_port: 8983
+nginx_client_max_body_size: 100M
+
+# OpenSSL configuration.
+openssl_private_dir: '/etc/ssl/private'
+openssl_certs_dir: '/etc/ssl/certs'
+openssl_key_signed: localhost.key
+openssl_crt_signed: localhost.crt
+
+# CKAN version
+# Note that updating the CKAN version of a server might require additional upgrade
+# steps, such as:
+# - Updating the solrconfig.yml file that is deployed via Ansible
+# - Any specific upgrade instructions as per the release notes
+
+ckan_package_url: https://packaging.ckan.org/python-ckan_2.9-py3-focal_amd64.deb
+ckan_package_file: /tmp/ckan_package.deb
+ckan_package_upgrade: false
+ckan_site_title: "CD²"
+ckan_site_description: >
+  The CD² metadata catalogue aggregates the metadata of the Dutch youth development
+  cohort studies collaborating under the Consortium on Individual Development (CID) umbrella.
+ckan_site_intro_text: >
+  The CD² metadata catalogue aggregates the metadata of the Dutch youth development
+  cohort studies collaborating under the Consortium on Individual Development (CID) umbrella.
+ckan_ini_file: /etc/ckan/default/ckan.ini
+ckan_cli_executable: /usr/lib/ckan/default/bin/ckan
+ckan_cd2_logo_path_prefix: /usr/lib/ckan/default/src/ckan/ckan/public
+ckan_cd2_logo_relpath: base/images/cd2-logo.svg
+ckan_storage_path: /ckandata
+ckan_search_facets_limit: 500
+ckan_version: "2.9.11"
+ckan_python_version: "3.8"
+
+ckan_session_timeout: 3600
+
+ckan_tracking_enabled: true
+extra_public_paths: /usr/lib/ckan/default/src/ckanext-msl-ckan/ckanext/msl_ckan/public
+
+# CKAN Database settings
+ckan_db_encoding: UTF-8
+ckan_db_lc_collate: en_US.utf8
+ckan_db_lc_ctype: en_US.utf8
+
+# CKAN extension versions
+ckanext_scheming_version: release-2.1.0
+ckan_pages_plugin_version: v0.5.2
+ckan_cd2_theme_version: 2873b614385444d1cb6b39425c201493049596ca  # Version of 6 February 2024
+ckan_cd2_theme_css_less: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/less/main.less
+ckan_cd2_theme_css_custom: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/fanstatic/cd2_custom.css
+
+# The CKAN MSL Core version parameter is used for determining the Solr schema,
+# whereas the branch parameter is used for updating the code. They are separate parameters
+# so that we can reference a specific commit in the code base while still getting
+# the correct Solr schema. They would usually be the same, however.
+ckan_msl_core_plugin_version: 1.4.0
+ckan_msl_core_plugin_branch: 1.4.0
+ckan_msl_util_plugin_branch: 1.0.0
