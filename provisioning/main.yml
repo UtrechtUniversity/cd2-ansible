@@ -226,15 +226,6 @@
         virtualenv: /usr/lib/ckan/default
         editable: yes
 
-    - name: Initialize CKAN pages database
-      become: yes
-      ansible.builtin.shell:
-        cmd: . /usr/lib/ckan/default/bin/activate && ckan --config=/etc/ckan/default/ckan.ini pages initdb
-      args:
-        executable: /bin/bash
-      environment:
-        PATH: "/usr/lib/ckan/default/bin:{{ ansible_env.PATH }}"
-
     # An SSH keypair with access to the cd2 repository should be placed in the provisioning/files/
     # directory. The filenames of the keypair files must begin with id_ (e.g. id_rsa + id_rsa.pub).
     # It is recommended, as a security precaution, to generate a dedicated CD² keypair (e.g. using
@@ -327,6 +318,30 @@
           mslfacets.dataset_config      = ckanext.msl_ckan:config/facets.json
           mslindexfields.field_config   = ckanext.msl_ckan:config/msl_index_fields.json
 
+    - name: Reload CKAN
+      become: yes
+      ansible.builtin.command: supervisorctl reload
+
+    - name: Restart Solr
+      become: yes
+      ansible.builtin.systemd:
+        name: tomcat9
+        state: restarted
+
+    - name: Restart Nginx
+      become: yes
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
+    
+    - name: Initialize CKAN pages database
+      become: yes
+      ansible.builtin.shell:
+        cmd: . /usr/lib/ckan/default/bin/activate && ckan --config=/etc/ckan/default/ckan.ini pages initdb
+      args:
+        executable: /bin/bash
+      environment:
+        PATH: "/usr/lib/ckan/default/bin:{{ ansible_env.PATH }}"
     - name: Reload CKAN
       become: yes
       ansible.builtin.command: supervisorctl reload
