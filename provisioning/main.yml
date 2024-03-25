@@ -342,6 +342,7 @@
         executable: /bin/bash
       environment:
         PATH: "/usr/lib/ckan/default/bin:{{ ansible_env.PATH }}"
+      
     - name: Reload CKAN
       become: yes
       ansible.builtin.command: supervisorctl reload
