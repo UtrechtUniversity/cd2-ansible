@@ -313,7 +313,7 @@
         marker: "# {mark} ANSIBLE MANAGED MSL_CKAN BLOCK"
         block: |
           # msl_ckan settings
-          scheming.dataset_schemas      = ckanext.msl_ckan:schemas/datasets/cd2_data.collection.yml ckanext.msl_ckan:schemas/datasets/ddi_studyunit.yml ckanext.msl_ckan:schemas/datasets/ddi_group.yml ckanext.msl_ckan:schemas/datasets/cd2_study.yml
+          scheming.dataset_schemas      = ckanext.msl_ckan:schemas/datasets/cd2_measure.yml ckanext.msl_ckan:schemas/datasets/cd2_study.yml
           # msl_ckan_util settings
           mslfacets.dataset_config      = ckanext.msl_ckan:config/facets.json
           mslindexfields.field_config   = ckanext.msl_ckan:config/msl_index_fields.json
