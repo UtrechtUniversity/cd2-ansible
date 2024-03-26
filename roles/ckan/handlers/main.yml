@@ -10,7 +10,7 @@
 # Call command, rather than module, because module doesn't work
 # right on Ubuntu 20.04
 - name: Restart ckan-uwsgi # noqa command-instead-of-module no-changed-when
-  ansible.builtin.command: supervisorctl restart ckan-uwsgi:ckan-uwsgi-00
+  ansible.builtin.shell: supervisorctl reload && sleep 6 && supervisorctl restart ckan-uwsgi:ckan-uwsgi-00
 
 
 - name: Restart Nginx webserver
@@ -26,4 +26,4 @@
 # See also https://github.com/Supervisor/supervisor/issues/48
 - name: Supervisor reload and restart all
   # noqa command-instead-of-module no-changed-when
-  ansible.builtin.shell: supervisorctl reload && sleep 3 && supervisorctl restart all
+  ansible.builtin.shell: supervisorctl reload && sleep 6 && supervisorctl restart all

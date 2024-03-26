@@ -260,6 +260,11 @@
   register: solr_init_queryelevation
 
 
+- name: Flush handlers to effectuate Solr schema change
+  ansible.builtin.meta: flush_handlers
+  when: not ansible_check_mode and update_solr_schema.changed
+
+
 - name: Check who.ini
   ansible.builtin.stat:
     path: /etc/ckan/default/who.ini
