@@ -191,29 +191,12 @@
     creates: '{{ ckan_cd2_theme_css_custom }}'
 
 
-- name: Install CKAN MSL Core plugin
+- name: Install CD2-config repository
   ansible.builtin.pip:
-    name: "git+https://github.com/UtrechtUniversity/msl_ckan_core@{{ ckan_msl_core_plugin_branch }}"
+    name: "git+https://github.com/UtrechtUniversity/cd2-config@{{ ckan_cd2_config_version }}"
     virtualenv: /usr/lib/ckan/default
     extra_args: "--upgrade"
   notify: Restart ckan-uwsgi
-
-
-- name: Clone CKAN MSL Core plugin for copying images
-  become: true
-  become_user: ckan
-  ansible.builtin.git:
-    repo: "https://github.com/UtrechtUniversity/msl_ckan_core"
-    dest: /usr/lib/ckan/msl_ckan_core
-    version: "{{ ckan_msl_core_plugin_branch }}"
-
-
-# Workaround for issue where pip doesn't install static images in MSL core plugin
-- name: Synchronize MSL Core plugin images
-  ansible.posix.synchronize:
-    src: /usr/lib/ckan/msl_ckan_core/ckanext/msl_ckan/public/
-    dest: "/usr/lib/ckan/default/lib/python{{ ckan_python_version }}/site-packages/ckanext/msl_ckan/public/"
-  delegate_to: "{{ inventory_hostname }}"
 
 
 - name: Check Solr schema
@@ -236,17 +219,9 @@
     src: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.solr8.xml
     dest: "{{ solr_config_dir }}/{{ solr_schema_filename }}"
   notify: Restart Solr
+  register: update_solr_schema
   delegate_to: "{{ inventory_hostname }}"
   when: not ansible_check_mode
-
-
-- name: Upload CD² logo
-  ansible.builtin.copy:
-    src: cd2-logo.svg
-    dest: "{{ ckan_cd2_logo_path_prefix }}/{{ ckan_cd2_logo_relpath }}"
-    owner: ckan
-    group: ckan
-    mode: "0644"
 
 
 - name: Ensure Solr QueryElevationComponent is initialized
@@ -263,6 +238,15 @@
 - name: Flush handlers to effectuate Solr schema change
   ansible.builtin.meta: flush_handlers
   when: not ansible_check_mode and update_solr_schema.changed
+
+
+- name: Upload CD² logo
+  ansible.builtin.copy:
+    src: cd2-logo.svg
+    dest: "{{ ckan_cd2_logo_path_prefix }}/{{ ckan_cd2_logo_relpath }}"
+    owner: ckan
+    group: ckan
+    mode: "0644"
 
 
 - name: Check who.ini
@@ -422,18 +406,15 @@
     group: ckan
 
 
-- name: Copy CD2 theme external images
-  ansible.builtin.copy:
-    src: "files/ckan-images/{{ item }}"
-    dest: "/var/www/ckan-images/{{ item }}"
-    mode: "0644"
-    owner: ckan
-    group: ckan
-  with_items:
-    - "uu.svg"
-    - "umc.svg"
-    - "erasmus.svg"
-    - "vu.svg"
-    - "uva.svg"
-    - "logo_UMCG.png"
-    - "leiden.svg"
+- name: Clone CKAN MSL Core plugin for copying images
+  ansible.builtin.git:
+    repo: "https://github.com/UtrechtUniversity/cd2-config"
+    dest: /usr/lib/ckan/cd2-config
+    version: "{{ ckan_cd2_config_version }}"
+
+
+- name: Synchronize CD2 images
+  ansible.posix.synchronize:
+    src: /usr/lib/ckan/cd2-config/ckanext/msl_ckan/public/img/
+    dest: "/var/www/ckan-images"
+  delegate_to: "{{ inventory_hostname }}"

@@ -56,10 +56,5 @@ ckan_cd2_theme_version: 2873b614385444d1cb6b39425c201493049596ca  # Version of 6
 ckan_cd2_theme_css_less: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/less/main.less
 ckan_cd2_theme_css_custom: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/fanstatic/cd2_custom.css
 
-# The CKAN MSL Core version parameter is used for determining the Solr schema,
-# whereas the branch parameter is used for updating the code. They are separate parameters
-# so that we can reference a specific commit in the code base while still getting
-# the correct Solr schema. They would usually be the same, however.
-ckan_msl_core_plugin_version: 1.4.0
-ckan_msl_core_plugin_branch: 1.4.0
+ckan_cd2_config_version: aab2057e56705c0e57639f1aac6d3af36e71011a # Version of 6 February 2024
 ckan_msl_util_plugin_branch: 1.0.0
