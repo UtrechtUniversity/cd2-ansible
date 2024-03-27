@@ -161,8 +161,6 @@
           ckan.dataset.create_on_ui_requires_resources = false
           ## Search facet settings
           search.facets.limit = 500
-          ## Collect dataset visits
-          ckan.tracking_enabled = true
           ## Add msl-ckan public directory as extra public path
           extra_public_paths = /usr/lib/ckan/default/src/ckanext-msl-ckan/ckanext/msl_ckan/public
 
