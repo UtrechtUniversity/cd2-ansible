@@ -52,13 +52,10 @@ if ! command -v ansible >/dev/null; then
     sudo pip3 install --upgrade ansible==6.7.0
 fi
 
-# Remove current version.
-rm -rf ~/epos-msl
-
-# Clone epos-msl repository.
-git clone https://github.com/UtrechtUniversity/epos-msl.git
-cd epos-msl
-git checkout development
+# Clone CD2-ansible repository.
+git clone https://github.com/UtrechtUniversity/cd2-ansible.git
+cd cd2-ansible
+git checkout development-its
 
 # Set file permissions on SSH key to 0600.
-chmod 0600 ~/epos-msl/vagrant/ssh/vagrant
+chmod 0600 ~/cd2-ansible/vagrant/ssh/vagrant
