@@ -62,14 +62,6 @@
     creates: /var/solr/data/ckan/core.properties
 
 
-- name: Replace default Solr schema file
-  ansible.builtin.file:
-    src: '/usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml'
-    dest: '/var/solr/data/ckan/conf/managed-schema'
-    state: link
-    force: true
-
-
 - name: Ensure solrconfig.xml for CKAN is present
   ansible.builtin.template:
     src: "solrconfig.xml.j2"

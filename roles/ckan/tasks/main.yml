@@ -164,6 +164,24 @@
     virtualenv: /usr/lib/ckan/default
 
 
+- name: Replace default Solr schema file
+  ansible.builtin.file:
+    src: '/usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml'
+    dest: '/var/solr/data/ckan/conf/managed-schema'
+    state: link
+    force: true
+  register: ckan_solr_schema_file
+
+
+# Use task rather than handler, because we want to restart Solr before
+# (re)starting CKAN
+- name: Restart Solr immediately to load new CKAN schema
+  ansible.builtin.service:
+    name: solr
+    state: restarted
+  when: ckan_solr_schema_file.changed
+
+
 - name: Install CKAN scheming plugin
   ansible.builtin.pip:
     name: "https://github.com/ckan/ckanext-scheming/archive/{{ ckanext_scheming_version }}.tar.gz"
