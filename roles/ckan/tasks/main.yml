@@ -164,9 +164,9 @@
     virtualenv: /usr/lib/ckan/default
 
 
-- name: Replace default Solr schema file
+- name: Replace default Solr schema file with CD2 schema
   ansible.builtin.file:
-    src: '/usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml'
+    src: '/usr/lib/ckan/cd2-config/ckanext/msl_ckan/config/schema.xml'
     dest: '/var/solr/data/ckan/conf/managed-schema'
     state: link
     force: true
