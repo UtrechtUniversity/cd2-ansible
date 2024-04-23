@@ -1,0 +1,39 @@
+---
+# copyright Utrecht University
+
+- name: Clone PyOAI for OAI-PMH server plugin
+  ansible.builtin.git:
+    repo: "https://github.com/{{ ckan_pyoai_repo }}"
+    dest: /usr/lib/ckan/pyoai
+    version: "{{ ckan_pyoai_version }}"
+
+
+- name: Clone OAI-PMH server plugin
+  ansible.builtin.git:
+    repo: "https://github.com/{{ ckan_oaipmh_server_plugin_repo }}"
+    dest: /usr/lib/ckan/ckanext-oaipmh-server
+    version: "{{ ckan_oaipmh_server_plugin_version }}"
+
+
+- name: Install PyOAI for OAI-PMH server plugin
+  ansible.builtin.pip:
+    name: /usr/lib/ckan/pyoai
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "-e"
+  notify: Restart ckan-uwsgi
+
+
+- name: Install OAI-PMH server plugin dependencies
+  ansible.builtin.pip:
+    requirements: /usr/lib/ckan/ckanext-oaipmh-server/requirements.txt
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "--ignore-installed"
+  notify: Restart ckan-uwsgi
+
+
+- name: Install OAI-PMH server plugin
+  ansible.builtin.pip:
+    name: /usr/lib/ckan/ckanext-oaipmh-server
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "-e"
+  notify: Restart ckan-uwsgi

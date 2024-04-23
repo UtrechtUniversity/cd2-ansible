@@ -186,6 +186,11 @@
   when: ckan_solr_schema_file.changed
 
 
+- name: Install OAI-PMH server plugin
+  ansible.builtin.import_tasks: install-oaipmh-server-plugin.yml
+  when: ckan_install_oaipmh_server_plugin
+
+
 - name: Install CKAN scheming plugin
   ansible.builtin.pip:
     name: "https://github.com/ckan/ckanext-scheming/archive/{{ ckanext_scheming_version }}.tar.gz"
