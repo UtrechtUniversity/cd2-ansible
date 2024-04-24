@@ -171,7 +171,7 @@
 - name: Replace default Solr schema file with CD2 schema
   ansible.builtin.file:
     src: '/usr/lib/ckan/cd2-config/ckanext/msl_ckan/config/schema.xml'
-    dest: '/var/solr/data/ckan/conf/managed-schema'
+    dest: '/var/solr/data/ckan/conf/schema.xml'
     state: link
     force: true
   register: ckan_solr_schema_file
