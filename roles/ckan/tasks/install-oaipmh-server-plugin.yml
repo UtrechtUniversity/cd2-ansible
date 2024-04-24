@@ -27,7 +27,6 @@
   ansible.builtin.pip:
     requirements: /usr/lib/ckan/ckanext-oaipmh-server/requirements.txt
     virtualenv: /usr/lib/ckan/default
-    extra_args: "--ignore-installed"
   notify: Restart ckan-uwsgi
 
 
