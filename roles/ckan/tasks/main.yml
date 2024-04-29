@@ -214,8 +214,23 @@
 
 - name: Compile CD² theme CSS
   ansible.builtin.command:
-    cmd: 'lessc "{{ ckan_cd2_theme_css_less }}" "{{ ckan_cd2_theme_css_custom }}"'
-    creates: '{{ ckan_cd2_theme_css_custom }}'
+    cmd: 'lessc "{{ ckan_cd2_theme_css_less }}" "{{ ckan_cd2_theme_css_custom }}.tmp-ansible"'
+  changed_when: false
+
+
+- name: Check whether CD² theme has changed
+  ansible.builtin.command:
+    cmd: diff "{{ ckan_cd2_theme_css_custom }}" "{{ ckan_cd2_theme_css_custom }}.tmp-ansible"
+  failed_when: ckan_theme_diff_output.rc > 1
+  changed_when: false
+  register: ckan_theme_diff_output
+
+
+- name: Update CD² theme if needed
+  ansible.builtin.command:
+    cmd: cp "{{ ckan_cd2_theme_css_custom }}.tmp-ansible" "{{ ckan_cd2_theme_css_custom }}"
+  changed_when: true
+  when: ckan_theme_diff_output.rc == 1
 
 
 - name: Install CD2-config repository
