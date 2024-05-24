@@ -177,13 +177,24 @@
   register: ckan_solr_schema_file
 
 
+- name: Ensure Solr QueryElevationComponent is initialized
+  ansible.builtin.copy:
+    src: "{{ solr_elevate_example_dir }}/elevate.xml"
+    dest: "{{ solr_config_dir }}/elevate.xml"
+    owner: solr
+    group: solr
+    mode: '0644'
+    remote_src: true
+  register: solr_init_queryelevation
+
+
 # Use task rather than handler, because we want to restart Solr before
 # (re)starting CKAN
 - name: Restart Solr immediately to load new CKAN schema
   ansible.builtin.service:
     name: solr
     state: restarted
-  when: ckan_solr_schema_file.changed
+  when: ckan_solr_schema_file.changed or solr_init_queryelevation_changed
 
 
 - name: Install OAI-PMH server plugin
