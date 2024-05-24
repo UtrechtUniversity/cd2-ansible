@@ -241,47 +241,6 @@
   notify: Restart ckan-uwsgi
 
 
-- name: Check Solr schema
-  ansible.builtin.stat:
-    path: "{{ solr_config_dir }}/{{ solr_schema_filename }}"
-  register: solrschema
-
-
-- name: Ensure default schema has been backed up
-  ansible.builtin.command:
-    cmd: "mv {{ solr_config_dir }}/{{ solr_schema_filename }} {{ solr_config_dir }}/{{ solr_schema_filename }}.orig"
-    creates: "{{ solr_config_dir }}/{{ solr_schema_filename }}"
-  when: solrschema.stat.exists and solrschema.stat.isreg is defined and solrschema.stat.isreg
-
-
-- name: Use custom Solr schema for CD2 catalog
-  become_user: root
-  become: true
-  ansible.posix.synchronize:
-    src: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.solr8.xml
-    dest: "{{ solr_config_dir }}/{{ solr_schema_filename }}"
-  notify: Restart Solr
-  register: update_solr_schema
-  delegate_to: "{{ inventory_hostname }}"
-  when: not ansible_check_mode
-
-
-- name: Ensure Solr QueryElevationComponent is initialized
-  ansible.builtin.copy:
-    src: "{{ solr_elevate_example_dir }}/elevate.xml"
-    dest: "{{ solr_config_dir }}/elevate.xml"
-    owner: solr
-    group: solr
-    mode: '0644'
-    remote_src: true
-  register: solr_init_queryelevation
-
-
-- name: Flush handlers to effectuate Solr schema change
-  ansible.builtin.meta: flush_handlers
-  when: not ansible_check_mode and update_solr_schema.changed
-
-
 - name: Upload CD² logo
   ansible.builtin.copy:
     src: cd2-logo.svg
