@@ -72,14 +72,14 @@
 
 
 # Solr might be started outside of systemd. Stop it with command to workaround
-# service limitations, so it can be restarted via systemd.
+# service module limitations, so it can be restarted via systemd.
 - name: Ensure Solr is stopped
   # noqa command-instead-of-module no-handler no-changed-when
   ansible.builtin.command: service solr stop
   when: solr_installed.changed
 
 
-- name: Upload Solr systemd unit file has been installed
+- name: Ensure Solr systemd unit file has been installed
   ansible.builtin.copy:
     src: "solr.service"
     dest: "/etc/systemd/system/solr.service"
