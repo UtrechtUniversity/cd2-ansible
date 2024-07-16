@@ -18,7 +18,7 @@
   become: true
   roles:
     - common
-    - { role: acme_certificates, when: epos_msl_environment == "testing" }
+    - { role: acme_certificates, when: catalog_environment == "testing" }
     - certificates
     - nginx
     - postgresql

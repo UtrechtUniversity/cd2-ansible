@@ -16,8 +16,8 @@
 
 - name: Generate certificate if it  doesn't exist yet
   ansible.builtin.command:
-    cmd: "certbot certonly --standalone --noninteractive --agree-tos --email {{ acme_certificates_le_email }} -d {{ epos_msl_fqdn }}"
-    creates: "/etc/letsencrypt/live/{{ epos_msl_fqdn }}/fullchain.pem"
+    cmd: "certbot certonly --standalone --noninteractive --agree-tos --email {{ acme_certificates_le_email }} -d {{ ckan_fqdn }}"
+    creates: "/etc/letsencrypt/live/{{ ckan_fqdn }}/fullchain.pem"
   notify: Restart Apache
 
 
@@ -36,13 +36,13 @@
     mode: '{{ item.mode }}'
     remote_src: true
   with_items:
-    - src: '/etc/letsencrypt/live/{{ epos_msl_fqdn }}/fullchain.pem'
+    - src: '/etc/letsencrypt/live/{{ ckan_fqdn }}/fullchain.pem'
       dest: '/etc/ssl/certs/localhost_and_chain.crt'
       mode: '0644'
-    - src: '/etc/letsencrypt/live/{{ epos_msl_fqdn }}/fullchain.pem'
+    - src: '/etc/letsencrypt/live/{{ ckan_fqdn }}/fullchain.pem'
       dest: '/etc/ssl/certs/localhost.crt'
       mode: '0644'
-    - src: '/etc/letsencrypt/live/{{ epos_msl_fqdn }}/privkey.pem'
+    - src: '/etc/letsencrypt/live/{{ ckan_fqdn }}/privkey.pem'
       dest: '/etc/ssl/private/localhost.key'
       mode: '0600'
   when: not ansible_check_mode
