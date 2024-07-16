@@ -194,7 +194,7 @@
   ansible.builtin.service:
     name: solr
     state: restarted
-  when: ckan_solr_schema_file.changed or solr_init_queryelevation_changed
+  when: ckan_solr_schema_file.changed or solr_init_queryelevation.changed
 
 
 - name: Install OAI-PMH server plugin
