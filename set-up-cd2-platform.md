@@ -104,7 +104,6 @@ Prefix: 10.60641
 Publication to the CD2_catalog requires CKAN-API-access and the loader needs to be configured as such.
 This is described within the application code itself.  
 
-The API-key itself is already created in a previous step.
+The API-key itself has already been created in a previous step.
 
-
-After loading data the CD2-platform is publically avaliable and can be used publically
+After loading data, the CD2 platform is ready for use.

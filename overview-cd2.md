@@ -52,7 +52,7 @@ The functionality of the dataloader can be divided into two main parts:
 -Actual publication of cohort metadata to the CD2 platform including publication to DataCite.  
 The catalog-page for each measure will serve as a landingpage for the corresponding DataCite-publication.
 
-An essential part in this entire process is the taxanomy file
+An essential part in this entire process is the taxonomy file
 
 #### Taxonomy file(s)
 Each taxonomy file is an excel file containing all details of a specific study.  
@@ -101,7 +101,7 @@ Each datataxonomy file holds the relationship between the CKAN-identifier and it
 DOI being the identifier of the measure-publication within DataCite.  
 CKAN-identifier being the identifier of a measure within the CD2-platform.  
 This relationship needs to be safeguarded at all times as it determines the link between two separate systems (CD2-catalog and DataCite).  
-It thus assures **robustness/reproducability** and ensures full recovery after system problems
+It thus assures **robustness/reproducibility** and ensures full recovery after system problems
 
 
 ## Deployment of the CD2-platform
