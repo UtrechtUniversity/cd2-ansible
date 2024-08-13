@@ -52,10 +52,10 @@ ckan_db_lc_ctype: en_US.utf8
 # CKAN extension versions
 ckanext_scheming_version: release-2.1.0
 ckan_pages_plugin_version: v0.5.2
-ckan_cd2_theme_version: a80f1a160b8a12a9b8bff32da8941cdd843ea208  # Version of 18 Juni 2024
+ckan_cd2_theme_version: v0.9.0
 ckan_cd2_theme_css_less: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/less/main.less
 ckan_cd2_theme_css_custom: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/fanstatic/cd2_custom.css
-ckan_cd2_config_version: development-its
+ckan_cd2_config_version: v0.9.1
 ckan_msl_util_plugin_branch: 1.0.0
 
 ckan_install_oaipmh_server_plugin: true
