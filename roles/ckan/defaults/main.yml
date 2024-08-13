@@ -42,7 +42,7 @@ ckan_python_version: "3.8"
 ckan_session_timeout: 3600
 
 ckan_tracking_enabled: true
-extra_public_paths: /usr/lib/ckan/default/src/ckanext-msl-ckan/ckanext/msl_ckan/public
+extra_public_paths: /usr/lib/ckan/default/src/ckanext-cd2-config/ckanext/cd2_config/public
 
 # CKAN Database settings
 ckan_db_encoding: UTF-8

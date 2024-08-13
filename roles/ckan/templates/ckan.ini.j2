@@ -126,20 +126,20 @@ solr_url = http://127.0.0.1:{{ solr_port }}/solr/ckan
 #		same origin policy
 #ckan.plugins = stats text_view image_view recline_view
 {% if ckan_install_oaipmh_server_plugin %}
-ckan.plugins = stats text_view image_view recline_view cd2_theme msl_ckan scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields pages oaipmh
+ckan.plugins = stats text_view image_view recline_view cd2_theme cd2_config scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields pages oaipmh
 {% else %}
-ckan.plugins = stats text_view image_view recline_view cd2_theme msl_ckan scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields pages
+ckan.plugins = stats text_view image_view recline_view cd2_theme cd2_config scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields pages
 {% endif %}
 
 # Define which views should be created by default
 # (plugins must be loaded in ckan.plugins)
 ckan.views.default_views = image_view text_view recline_view
 
-# msl_ckan settings
-scheming.dataset_schemas      = ckanext.msl_ckan:schemas/datasets/cd2_measure.yml ckanext.msl_ckan:schemas/datasets/cd2_study.yml
+# cd2_config settings
+scheming.dataset_schemas      = ckanext.cd2_config:schemas/datasets/cd2_measure.yml ckanext.cd2_config:schemas/datasets/cd2_study.yml
 # msl_ckan_util settings
-mslfacets.dataset_config      = ckanext.msl_ckan:config/facets.json
-mslindexfields.field_config   = ckanext.msl_ckan:config/msl_index_fields.json
+mslfacets.dataset_config      = ckanext.cd2_config:config/facets.json
+mslindexfields.field_config   = ckanext.cd2_config:config/msl_index_fields.json
 
 # Customize which text formats the text_view plugin will show
 #ckan.preview.json_formats = json

@@ -170,7 +170,7 @@
 
 - name: Replace default Solr schema file with CD2 schema
   ansible.builtin.file:
-    src: '/usr/lib/ckan/cd2-config/ckanext/msl_ckan/config/schema.xml'
+    src: '/usr/lib/ckan/cd2-config/ckanext/cd2_config/config/schema.xml'
     dest: '/var/solr/data/ckan/conf/schema.xml'
     state: link
     force: true
@@ -430,7 +430,7 @@
 
 - name: Synchronize CD2 images
   ansible.posix.synchronize:
-    src: /usr/lib/ckan/cd2-config/ckanext/msl_ckan/public/img/
+    src: /usr/lib/ckan/cd2-config/ckanext/cd2_config/public/img/
     dest: "/var/www/ckan-images"
   delegate_to: "{{ inventory_hostname }}"
 
