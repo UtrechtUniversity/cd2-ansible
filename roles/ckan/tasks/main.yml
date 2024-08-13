@@ -398,6 +398,7 @@
     minute: "0"
     job: "/usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini tracking update"
     user: ckan
+    state: '{{ "present" if ckan_tracking_enabled else "absent" }}'
 
 
 # This job is also needed for updating page view tracking data
