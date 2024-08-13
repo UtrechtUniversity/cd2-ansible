@@ -1,32 +1,61 @@
+# coding: utf-8
+# copyright Utrecht University
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
-Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/focal64"
+# Configuration variables.
+VAGRANTFILE_API_VERSION = "2"
 
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  config.vm.network "private_network", ip: "192.168.56.30"
+BOX = 'ubuntu/focal64'
+GUI = false
+CPU = 2
+RAM = 2048
 
-  # Disable synced folder (enabled by default, but we don't need it)
-  config.vm.synced_folder ".", "/vagrant", disabled: true
+DOMAIN  = ".ckan.test"
+NETWORK = "192.168.60."
+NETMASK = "255.255.255.0"
+HOSTS = {
+  "cd2" => [NETWORK+"30", 2, 2048, GUI, BOX],
+}
 
-  config.vm.hostname = "cd2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.ssh.insert_key = false
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.gui = false
-  
-    vb.memory = "4096"
-    vb.cpus = "4"
-    
-    vb.name = "cd2"
+  HOSTS.each do | (name, cfg) |
+    ipaddr, cpu, ram, gui, box = cfg
+
+    config.vm.define name do |machine|
+      machine.vm.box = box
+
+      machine.vm.provider "virtualbox" do |vbox|
+        vbox.gui    = gui
+        vbox.cpus   = cpu
+        vbox.memory = ram
+        vbox.name   = name
+        vbox.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000]
+      end
+
+      machine.vm.hostname = name + DOMAIN
+      machine.vm.network 'private_network', ip: ipaddr, netmask: NETMASK
+      machine.vm.synced_folder ".", "/vagrant", disabled: true
+      machine.vm.provision "shell",
+        inline: "sudo timedatectl set-timezone Europe/Amsterdam"
+    end
   end
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "provisioning/main.yml"
+  # Provision controller for Ansible on Windows host.
+  if Vagrant::Util::Platform.windows? then
+    config.vm.define "cd2-controller" do |controller|
+      controller.vm.provider "virtualbox" do |vbox|
+        vbox.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000]
+      end
+      controller.vm.box = BOX
+      controller.vm.hostname = "cd2-controller"
+      controller.vm.network :private_network, ip: NETWORK + "35", netmask: NETMASK
+      controller.vm.synced_folder ".", "/vagrant", disabled: true
+      controller.vm.provision "shell", privileged: false, path: "vagrant/provision_controller.sh"
+      controller.vm.provision "shell",
+        inline: "sudo timedatectl set-timezone Europe/Amsterdam"
+    end
   end
 end

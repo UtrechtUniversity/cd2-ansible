@@ -1,0 +1,441 @@
+---
+# copyright Utrecht University
+
+- name: Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: apt
+
+
+- name: Ensure CKAN prerequisites are installed
+  ansible.builtin.package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - gcc
+    - libpq5
+    - libxslt1-dev
+    - libxslt1.1
+    - libxml2
+    - libxml2-dev
+    - make
+    - nodejs
+    - npm
+    - pipenv
+    - python3-dev
+    - python3-pastescript
+    - python3-virtualenv
+    - python3-distutils
+    - python3-pip
+    - supervisor
+    - unzip
+
+
+- name: Install Less.js from the NPM registry
+  become: true
+  community.general.npm:
+    name: less
+    global: true
+
+
+- name: Ensure supervisord is running
+  ansible.builtin.service:
+    name: supervisor
+    state: started
+
+
+- name: Ensure CKAN storage path is present
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0775"
+  with_items:
+    - "{{ ckan_storage_path }}"
+    - "{{ ckan_storage_path }}/storage"
+    - "{{ ckan_storage_path }}/webassets"
+
+
+- name: Install CKAN package
+  ansible.builtin.apt:
+    deb: '{{ ckan_package_url }}'
+  when: 'ckan_package_upgrade or "python-ckan" not in ansible_facts.packages'
+
+
+- name: Ensure a 'wheel' group exists
+  ansible.builtin.group:
+    name: wheel
+    state: present
+
+
+- name: Allow 'wheel' group to have passwordless sudo
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s
+
+
+- name: Ensure CKAN user exists
+  ansible.builtin.user:
+    name: ckan
+    comment: "CKAN User"
+    home: /usr/lib/ckan
+    shell: /bin/bash
+    groups: wheel
+    append: true
+
+
+- name: Ensure CKAN database exists
+  become_user: postgres
+  become: true
+  community.general.postgresql_db:
+    name: "ckan_default"
+    encoding: "{{ ckan_db_encoding }}"
+    lc_collate: "{{ ckan_db_lc_collate }}"
+    lc_ctype: "{{ ckan_db_lc_ctype }}"
+    template: template0
+  vars:
+    # Pipelininig is needed for internal temporary files in postgresl module
+    ansible_ssh_pipelining: true
+
+
+- name: Ensure CKAN database user exists
+  become_user: postgres
+  become: true
+  community.general.postgresql_user:
+    db: "ckan_default"
+    name: "ckan_default"
+    password: "{{ ckan_database_password }}"
+    priv: ALL
+  vars:
+    # Pipelininig is needed for internal temporary files in postgresl module
+    ansible_ssh_pipelining: true
+
+
+- name: Ensure CKAN directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+    owner: ckan
+  with_items:
+    - /usr/lib/ckan
+    - /usr/lib/ckan/default
+    - /etc/ckan
+    - /etc/ckan/default
+
+
+- name: Generate session secret
+  ansible.builtin.shell: openssl rand -base64 32 > /etc/ckan/default/session_secret
+    creates=/etc/ckan/default/session_secret
+  when: not ansible_check_mode
+
+
+- name: Read session secret
+  ansible.builtin.command: cat /etc/ckan/default/session_secret
+  register: session_secret
+  changed_when: false
+
+
+- name: Generate unique application instance identifier
+  ansible.builtin.shell: 'echo {{ ansible_hostname | to_uuid }} > /etc/ckan/default/app_instance_uuid
+    creates=/etc/ckan/default/app_instance_uuid'
+  when: not ansible_check_mode
+
+
+- name: Read unique application instance identifier
+  ansible.builtin.command: cat /etc/ckan/default/app_instance_uuid
+  register: app_instance_uuid
+  changed_when: false
+
+
+- name: Configure CKAN
+  ansible.builtin.template:
+    src: "ckan.ini.j2"
+    dest: "{{ ckan_ini_file }}"
+    owner: www-data
+    group: www-data
+    mode: "0644"
+  when: not ansible_check_mode
+
+
+# Needed for preventing warnings/error when installing MSL plugins
+- name: Install wheel package
+  ansible.builtin.pip:
+    name: wheel
+    virtualenv: /usr/lib/ckan/default
+
+
+- name: Replace default Solr schema file with CD2 schema
+  ansible.builtin.file:
+    src: '/usr/lib/ckan/cd2-config/ckanext/msl_ckan/config/schema.xml'
+    dest: '/var/solr/data/ckan/conf/schema.xml'
+    state: link
+    force: true
+  register: ckan_solr_schema_file
+
+
+- name: Ensure Solr QueryElevationComponent is initialized
+  ansible.builtin.copy:
+    src: "{{ solr_elevate_example_dir }}/elevate.xml"
+    dest: "{{ solr_config_dir }}/elevate.xml"
+    owner: solr
+    group: solr
+    mode: '0644'
+    remote_src: true
+  register: solr_init_queryelevation
+
+
+# Use task rather than handler, because we want to restart Solr before
+# (re)starting CKAN
+- name: Restart Solr immediately to load new CKAN schema
+  ansible.builtin.service:
+    name: solr
+    state: restarted
+  when: ckan_solr_schema_file.changed or solr_init_queryelevation.changed
+
+
+- name: Install OAI-PMH server plugin
+  ansible.builtin.import_tasks: install-oaipmh-server-plugin.yml
+  when: ckan_install_oaipmh_server_plugin
+
+
+- name: Install CKAN scheming plugin
+  ansible.builtin.pip:
+    name: "https://github.com/ckan/ckanext-scheming/archive/{{ ckanext_scheming_version }}.tar.gz"
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "--upgrade"
+  notify: Restart ckan-uwsgi
+
+
+- name: Install ckanext-pages extension
+  ansible.builtin.pip:
+    name: "git+https://github.com/ckan/ckanext-pages@{{ ckan_pages_plugin_version }}#egg=ckanext-pages"
+    virtualenv: /usr/lib/ckan/default
+    editable: true
+
+
+- name: Install ckanext-cd2_theme repository
+  ansible.builtin.pip:
+    name: "git+https://github.com/UtrechtUniversity/ckanext-cd2_theme@{{ ckan_cd2_theme_version }}#egg=ckanext-cd2_theme"
+    virtualenv: /usr/lib/ckan/default
+    editable: true
+
+- name: Compile CD² theme CSS
+  ansible.builtin.command:
+    cmd: 'lessc "{{ ckan_cd2_theme_css_less }}" "{{ ckan_cd2_theme_css_custom }}.tmp-ansible"'
+  changed_when: false
+
+
+- name: Check whether CD² theme has changed
+  ansible.builtin.command:
+    cmd: diff "{{ ckan_cd2_theme_css_custom }}" "{{ ckan_cd2_theme_css_custom }}.tmp-ansible"
+  failed_when: ckan_theme_diff_output.rc > 1
+  changed_when: false
+  register: ckan_theme_diff_output
+
+
+- name: Update CD² theme if needed
+  ansible.builtin.command:
+    cmd: cp "{{ ckan_cd2_theme_css_custom }}.tmp-ansible" "{{ ckan_cd2_theme_css_custom }}"
+  changed_when: true
+  when: ckan_theme_diff_output.rc == 1
+
+
+- name: Install CD2-config repository
+  ansible.builtin.pip:
+    name: "git+https://github.com/UtrechtUniversity/cd2-config@{{ ckan_cd2_config_version }}"
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "--upgrade"
+  notify: Restart ckan-uwsgi
+
+
+- name: Upload CD² logo
+  ansible.builtin.copy:
+    src: cd2-logo.svg
+    dest: "{{ ckan_cd2_logo_path_prefix }}/{{ ckan_cd2_logo_relpath }}"
+    owner: ckan
+    group: ckan
+    mode: "0644"
+
+
+- name: Check who.ini
+  ansible.builtin.stat:
+    path: /etc/ckan/default/who.ini
+  register: whoini
+
+
+- name: Ensure who.ini has been backed up
+  ansible.builtin.command:
+    cmd: "mv /etc/ckan/default/who.ini /etc/ckan/default/who.ini.orig"
+    creates: /etc/ckan/default/who.ini.orig
+  when: whoini.stat.exists and whoini.stat.isreg is defined and whoini.stat.isreg
+
+
+- name: Ensure CKAN who.ini is symlinked
+  become_user: root
+  become: true
+  ansible.builtin.file:
+    src: /usr/lib/ckan/default/src/ckan/who.ini
+    dest: /etc/ckan/default/who.ini
+    state: link
+
+
+- name: Install CKAN MSL Util plugin
+  ansible.builtin.pip:
+    name: "git+https://github.com/UtrechtUniversity/msl_ckan_util@{{ ckan_msl_util_plugin_branch }}"
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "--upgrade"
+  notify: Restart ckan-uwsgi
+
+
+- name: Check CKAN database initialized
+  become: true
+  become_user: postgres
+  ansible.builtin.command: 'psql -d ckan_default -c "select * from public.user"'
+  register: userlist
+  failed_when: userlist.rc != 0 and "does not exist" not in userlist.stderr
+  changed_when: false
+  vars:
+    ansible_ssh_pipelining: true
+
+
+- name: Initialize CKAN database
+  become_user: root
+  become: true
+  ansible.builtin.command: # noqa no-changed-when
+    cmd: "{{ ckan_cli_executable }} --config {{ ckan_ini_file }} db init"
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
+  when: 'userlist.rc !=0 or "default" not in userlist.stdout'
+
+
+- name: Initialize CKAN pages plugin
+  become_user: root
+  become: true
+  ansible.builtin.command: # noqa no-changed-when
+    cmd: "{{ ckan_cli_executable }} --config {{ ckan_ini_file }} pages initdb"
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
+  when: 'userlist.rc !=0 or "default" not in userlist.stdout'
+
+
+# Reload supervisorctl as task, because there is no way to enforce ordering in
+# Ansible handlers, and we need to reload before we can start tasks.
+- name: Reload supervisorctl  # noqa command-instead-of-module no-changed-when
+  ansible.builtin.command: supervisorctl reload
+  when: 'userlist.rc !=0 or "default" not in userlist.stdout'
+
+- name: Check if CKAN admin user exists
+  become_user: root
+  become: true
+  ansible.builtin.command: "{{ ckan_cli_executable }} -c {{ ckan_ini_file }} user list"
+  changed_when: false
+  register: ckan_admin_user
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
+
+
+- name: Add CKAN admin user
+  become_user: root
+  become: true
+  ansible.builtin.expect:
+    command: '{{ ckan_cli_executable }} -c {{ ckan_ini_file }} user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin'
+    responses:
+      user: y
+  when: not ansible_check_mode and "name=ckanadmin" not in ckan_admin_user.stdout
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
+
+
+- name: Convert CKAN admin user to sysadmin
+  become_user: root
+  become: true
+  ansible.builtin.command: # noqa no-changed-when
+    cmd: "{{ ckan_cli_executable }} -c {{ ckan_ini_file }} sysadmin add ckanadmin"
+  when: ('"name=ckanadmin" not in ckan_admin_user.stdout') and not ansible_check_mode
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
+
+
+- name: Ensure reverse proxy config for Nginx is present
+  ansible.builtin.template:
+    src: "nginx-ckan.j2"
+    dest: "/etc/nginx/sites-available/ckan"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Nginx webserver
+
+
+- name: Activate Nginx reverse proxy
+  ansible.builtin.file:
+    dest: "/etc/nginx/sites-enabled/ckan"
+    src: "/etc/nginx/sites-available/ckan"
+    state: link
+  notify: Restart Nginx webserver
+
+
+- name: Configure cleanup job for CKAN Beaker session files
+  ansible.builtin.cron:
+    name: "Cleanup job for CKAN beaker session files"
+    hour: "19"
+    minute: "0"
+    user: root
+    job: "find /tmp/default/sessions -type f -mtime +1 -delete"
+
+
+- name: Configure job for updating CKAN tracking data
+  ansible.builtin.cron:
+    name: "CKAN tracking data update job"
+    minute: "0"
+    job: "/usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini tracking update"
+    user: ckan
+
+
+# This job is also needed for updating page view tracking data
+- name: Configure job for rebuilding CKAN search index
+  ansible.builtin.cron:
+    name: "CKAN search index rebuild job"
+    minute: "0"
+    job: "/usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini search-index rebuild -r"
+    user: ckan
+
+
+- name: Add directory for CD2 theme external images
+  ansible.builtin.file:
+    path: /var/www/ckan-images
+    state: directory
+    mode: "0755"
+    owner: ckan
+    group: ckan
+
+
+- name: Clone CKAN MSL Core plugin for copying images
+  ansible.builtin.git:
+    repo: "https://github.com/UtrechtUniversity/cd2-config"
+    dest: /usr/lib/ckan/cd2-config
+    version: "{{ ckan_cd2_config_version }}"
+
+
+- name: Synchronize CD2 images
+  ansible.posix.synchronize:
+    src: /usr/lib/ckan/cd2-config/ckanext/msl_ckan/public/img/
+    dest: "/var/www/ckan-images"
+  delegate_to: "{{ inventory_hostname }}"
+
+
+- name: Fix up permissions CKAN storage directory
+  ansible.builtin.file:
+    dest: "{{ ckan_storage_path }}"
+    owner: www-data
+    group: www-data
+    mode: "u=rwX,g=rX,o=rX"
+    recurse: true

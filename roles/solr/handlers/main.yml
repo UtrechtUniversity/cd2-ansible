@@ -1,0 +1,7 @@
+---
+# copyright Utrecht University
+
+- name: Restart Solr
+  ansible.builtin.service:
+    name: solr
+    state: restarted

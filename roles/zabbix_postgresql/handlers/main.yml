@@ -1,0 +1,13 @@
+---
+# copyright Utrecht University
+
+- name: Restart Zabbix agent
+  ansible.builtin.service:
+    name: zabbix-agent
+    state: restarted
+    enabled: true
+
+- name: Restart PostgreSQL
+  ansible.builtin.service:
+    name: postgresql
+    state: restarted
