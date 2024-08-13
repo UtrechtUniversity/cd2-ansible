@@ -27,3 +27,9 @@
 - name: Supervisor reload and restart all
   # noqa command-instead-of-module no-changed-when
   ansible.builtin.shell: supervisorctl reload && sleep 6 && supervisorctl restart all
+
+
+- name: Restart Solr
+  ansible.builtin.service:
+    name: solr
+    state: restarted

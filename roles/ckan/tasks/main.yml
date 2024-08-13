@@ -175,6 +175,7 @@
     state: link
     force: true
   register: ckan_solr_schema_file
+  notify: Restart Solr
 
 
 - name: Ensure Solr QueryElevationComponent is initialized
@@ -186,6 +187,7 @@
     mode: '0644'
     remote_src: true
   register: solr_init_queryelevation
+  notify: Restart Solr
 
 
 # Use task rather than handler, because we want to restart Solr before

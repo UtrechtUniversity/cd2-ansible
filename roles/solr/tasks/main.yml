@@ -91,7 +91,7 @@
 - name: Ensure Solr daemon is started using systemd
   ansible.builtin.systemd:
     name: solr
-    state: started
+    state: restarted
     daemon_reload: true
     enabled: true
 
