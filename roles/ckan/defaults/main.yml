@@ -62,4 +62,4 @@ ckan_install_oaipmh_server_plugin: true
 ckan_pyoai_repo: EUDAT-B2FIND/pyoai
 ckan_pyoai_version: c820990bad0eb1f1267532041f458bc716461ec8 # Version of 23 Jan 2023; prov_py3 branch
 ckan_oaipmh_server_plugin_repo: UtrechtUniversity/ckanext-oaipmh-server
-ckan_oaipmh_server_plugin_version: 148dcc2cfc6d75d0e6258458efee35752b204840 # Version of 24 June 2024
+ckan_oaipmh_server_plugin_version: 8f23d4bb963c8e2550eb2eee5bf49acc7dc75177 # Version of 25 September 2024
