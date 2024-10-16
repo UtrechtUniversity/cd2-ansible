@@ -228,6 +228,7 @@
 - name: Compile CD² theme CSS
   ansible.builtin.command:
     cmd: 'lessc "{{ ckan_cd2_theme_css_less }}" "{{ ckan_cd2_theme_css_custom }}.tmp-ansible"'
+    chdir: "{{ ckan_cd2_theme_css_less_dir }}"
   changed_when: false
 
 
