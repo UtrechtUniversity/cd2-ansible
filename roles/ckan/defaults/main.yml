@@ -52,7 +52,7 @@ ckan_db_lc_ctype: en_US.utf8
 # CKAN extension versions
 ckanext_scheming_version: release-2.1.0
 ckan_pages_plugin_version: v0.5.2
-ckan_cd2_theme_version: v1.0.0
+ckan_cd2_theme_version: v1.0.1
 ckan_cd2_theme_css_less: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/less/main.less
 ckan_cd2_theme_css_less_dir: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/less
 ckan_cd2_theme_css_custom: /usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/fanstatic/cd2_custom.css
@@ -63,4 +63,4 @@ ckan_install_oaipmh_server_plugin: true
 ckan_pyoai_repo: EUDAT-B2FIND/pyoai
 ckan_pyoai_version: c820990bad0eb1f1267532041f458bc716461ec8 # Version of 23 Jan 2023; prov_py3 branch
 ckan_oaipmh_server_plugin_repo: UtrechtUniversity/ckanext-oaipmh-server
-ckan_oaipmh_server_plugin_version: 4520d3606e356ae6fc95873d4794fb6def9acc17 # Version of 30 September 2024
+ckan_oaipmh_server_plugin_version: 3fc2b5cd7443f71a631a71c16cb3228a17adfe8d  # Version of 16 October 2024
