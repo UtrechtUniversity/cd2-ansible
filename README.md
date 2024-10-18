@@ -17,5 +17,5 @@ Ansible playbook for the deployment of the CD² metadata catalogue.
 - If you are on a Windows system, log in on the controller VM (`vagrant ssh cd2-controller`) and go to the repository directory (`cd cd2-ansible`). This step is not applicable to Linux and macOS systems.
 - Install the application using Ansible: `ansible-playbook -DK -i environments/development playbook.yml`
 - Press enter when Ansible asks for a password.
-- You can now access the CKAN environment at [https://cd2.ckan.test][(https://cd2.ckan.test). The credentials for the default administrative user are: username `ckanadmin' and password `testtest`. The login page can be found [here](https://cd2.ckan.test/user/login).
+- You can now access the CKAN environment at <https://cd2.ckan.test/user/login>. The credentials for the default administrative user are: username `ckanadmin` and password `testtest`.
 - To log into the virtual machine using SSH, run `vagrant ssh` (on Linux or macOS) or `vagrant ssh cd2` (on Windows)
