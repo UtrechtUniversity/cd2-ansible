@@ -225,6 +225,7 @@
     virtualenv: /usr/lib/ckan/default
     editable: true
 
+
 - name: Compile CD² theme CSS
   ansible.builtin.command:
     cmd: 'lessc "{{ ckan_cd2_theme_css_less }}" "{{ ckan_cd2_theme_css_custom }}.tmp-ansible"'
@@ -422,7 +423,7 @@
     group: ckan
 
 
-- name: Clone CKAN MSL Core plugin for copying images
+- name: Clone CD2 config repo for copying images
   ansible.builtin.git:
     repo: "https://github.com/UtrechtUniversity/cd2-config"
     dest: /usr/lib/ckan/cd2-config

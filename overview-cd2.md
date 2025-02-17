@@ -30,14 +30,14 @@ In order to be able to serve the specific purpose as required by the consortium,
 
 
 1. https://github.com/UtrechtUniversity/cd2-ckan-theme  
-Tailoring the frontend application of the catalog to the application's needs regarding style (css) and usability (javascript) as well as specific customization of ((by CKAN-provided) template files.
+Tailoring the frontend application of the catalog to the application's needs regarding style (css) and usability (javascript) as well as specific customization of (by CKAN-provided) template files.
 
 2. https://github.com/UtrechtUniversity/cd2-config  
 Holds the specific **CKAN-schemas** and **SOLR schema** as required in order to manage and present the data.  
  Furthermore it holds resources like images that are required in templates or as logos.
 
 3. https://github.com/UtrechtUniversity/ckanext-oaipmh-server  
-Being a fully open system the CD2-system can be harvested using the AOIPMH-standard in datacite format.  
+Being a fully open system the CD2-system can be harvested using the OAIPMH-standard in datacite format.
 To be able to do so Utrecht University built a module that is added to the CKAN-framework as a CKAN extension derived from EUDAT-B2FIND/ckanext-oaipmh-server.
 
 
@@ -52,7 +52,7 @@ The functionality of the dataloader can be divided into two main parts:
 -Actual publication of cohort metadata to the CD2 platform including publication to DataCite.  
 The catalog-page for each measure will serve as a landingpage for the corresponding DataCite-publication.
 
-An essential part in this entire process is the taxonomy file
+An essential part in this entire process is the taxonomy file.
 
 #### Taxonomy file(s)
 Each taxonomy file is an excel file containing all details of a specific study.  
@@ -65,7 +65,7 @@ The datataxonomy file is now ready to be used as input for the actual seeding (d
 
 #### Data preparation within the dataloader####  
 The dataloader creates **package-JSON files** based upon each inidividual datataxonomy file.  
-These **package-JSON files** serce as an intermediate or derived state to be used for (batchwise) loading (publishing) to CKAN and/or DataCite.  
+These **package-JSON files** serve as an intermediate or derived state to be used for (batchwise) loading (publishing) to CKAN and/or DataCite.  
 Furthermore, each measure in a package file is given an identifier that will be used within the CKAN-portal as a means of uniquely identifying each dataset (i.e. measure).  
 
 Two different JSON-files exist:  
@@ -114,16 +114,14 @@ Follow the steps as mentioned in 'set up cd2-platform'
 https://github.com/UtrechtUniversity/cd2-ansible
 
 
-
-
 ### General development and testing information
 #### cd2-config repo ####
-deployed in: **/usr/lib/ckan/cd2-config/ckanext/msl_ckan**
+deployed in: **/usr/lib/ckan/cd2-config/ckanext/cd2_config**
 
 
 #### cd2-ckan-theme repo ####
 deployed in: **/usr/lib/ckan/default/src/ckanext-cd2-theme**  
-Notice that, due to lessc action by Ansible there are already changes present within the repo after deployment.
+Note that due to lessc action by Ansible there are already changes present within the repo after deployment.
 
 
 #### ckanext-oaipmh-server ####
@@ -135,7 +133,7 @@ https://cd2.ckan.test/oai?verb=ListRecords&metadataPrefix=oai_datacite&set=youth
 https://cd2.ckan.test/oai?verb=ListRecords&metadataPrefix=oai_datacite  
 https://cd2.ckan.test/oai?verb=ListMetadataFormats  
 
-#### Mostly used log files ####
+#### Most used log files ####
 
 vi /var/log/ckan/ckan-uwsgi.stderr.log  
 vi /var/log/nginx/error.log  
@@ -149,5 +147,5 @@ service solr restart
 supervisorctl restart ckan-uwsgi:*  
 
 #### Schema locations ####
-CKAN: **/usr/lib/ckan/cd2-config/ckanext/msl_ckan/schemas**  
+CKAN: **/usr/lib/ckan/cd2-config/ckanext/cd2_config/schemas**  
 SOLR: **/var/solr/data/ckan/conf/schema.xml**

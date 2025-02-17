@@ -10,7 +10,7 @@
       ansible.builtin.assert:
         that: "ansible_version.full is version('2.7', '>=')"
         msg: >
-          "You must update Ansible to at least 2.7 to deploy EPOS-MSL CKAN."
+          "You must update Ansible to at least 2.7 to deploy CD2 CKAN."
 
 
 - name: Provision CD2 catalog CKAN server

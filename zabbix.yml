@@ -1,6 +1,6 @@
 ---
 # copyright Utrecht University
-# This playbook provisions EPOS-MSL instance with the Zabbix agent, PostgreSQL monitoring and Zabbix user access to the database.
+# This playbook provisions CD2 instance with the Zabbix agent, PostgreSQL monitoring and Zabbix user access to the database.
 
 - name: Local checks
   hosts: localhost
@@ -10,10 +10,10 @@
       ansible.builtin.assert:
         that: "ansible_version.full is version('2.7', '>=')"
         msg: >
-          "You must update Ansible to at least 2.7 to deploy EPOS-MSL CKAN."
+          "You must update Ansible to at least 2.7 to deploy CD2 CKAN."
 
 
-- name: Provision EPOS-MSL CKAN server with Zabbix monitoring
+- name: Provision CD2 CKAN server with Zabbix monitoring
   hosts: all
   become: true
   roles:
