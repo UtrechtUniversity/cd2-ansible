@@ -42,7 +42,7 @@ server {
     client_max_body_size 100M;
 
     location / {
-        proxy_pass http://ckan:5000/;
+        proxy_pass http://ckan:8080/;
         proxy_set_header Host PUT_HOST_HEADER_HERE;
         proxy_set_header X-Forwarded-Proto https;
         proxy_cache cache;

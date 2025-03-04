@@ -123,6 +123,6 @@ ENTRYPOINT ["/ckan-entrypoint.sh"]
 RUN chmod +x /ckan-entrypoint.sh
 
 USER root
-EXPOSE 5000
+EXPOSE 8080
 
 CMD ["/ckan-entrypoint.sh"]
