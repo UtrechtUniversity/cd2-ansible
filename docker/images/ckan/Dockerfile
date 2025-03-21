@@ -1,7 +1,7 @@
 # This is a locally modified version of the upstream CKAN Dockerfile
 
 # See CKAN docs on installation from Docker Compose on usage
-FROM ubuntu:focal-20210119
+FROM ubuntu:jammy
 LABEL org.opencontainers.image.authors="Yoda team"
 
 # Set timezone
@@ -20,11 +20,14 @@ RUN update-locale LANG=${LC_ALL}
 # Install required system packages
 RUN apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
+    && apt-get -q -y install software-properties-common \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get -q -y update \
     && apt-get -q -y install \
-        python3.8 \
-        python3-dev \
+        python3.9 \
+        python3.9-dev \
         python3-pip \
-        python3-venv \
+        python3.9-venv \
         python3-wheel \
         libpq-dev \
         python3-pastescript \
@@ -57,17 +60,17 @@ ENV CKAN_HOME /usr/lib/ckan
 ENV CKAN_VENV $CKAN_HOME/default
 ENV CKAN_CONFIG /etc/ckan
 ENV CKAN_STORAGE_PATH=/ckanstorage
-ENV CKAN_VERSION=2.9.11
+ENV CKAN_VERSION=2.11.0
 ENV CKAN_CD2_LOGO_PATH_PREFIX=/usr/lib/ckan/default/src/ckan/ckan/public
 ENV CKAN_CD2_LOGO_RELPATH=base/images/cd2-logo.png
 # Extensions, plugins
 ENV CKAN_PAGES_PLUGIN_VERSION=v0.5.2
-ENV CKAN_SCHEMING_VERSION=release-2.1.0
+ENV CKAN_SCHEMING_VERSION=release-3.0.0
 ENV CKAN_PYOAI_REPO=EUDAT-B2FIND/pyoai
 ENV CKAN_PYOAI_VERSION=c820990bad0eb1f1267532041f458bc716461ec8
 # Our plugins
 ENV CKAN_CD2_CONFIG_VERSION=v1.0.1
-ENV CKAN_MSL_UTIL_VERSION=1.0.0
+ENV CKAN_MSL_UTIL_VERSION=1.1.0
 ENV CKAN_CD2_THEME_VERSION=v1.0.2
 ENV CKAN_OAIPMH_SERVER_PLUGIN_REPO=UtrechtUniversity/ckanext-oaipmh-server
 ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=3fc2b5cd7443f71a631a71c16cb3228a17adfe8d
@@ -83,7 +86,7 @@ ARG CKAN_SITE_URL
 
 # Setup virtual environment for CKAN
 RUN mkdir -p $CKAN_VENV $CKAN_CONFIG/default && \
-    python3 -m venv $CKAN_VENV && \
+    python3.9 -m venv $CKAN_VENV && \
     ln -s $CKAN_VENV/bin/pip3 /usr/local/bin/ckan-pip3 &&\
     ln -s $CKAN_VENV/bin/ckan /usr/local/bin/ckan
 ADD ckan.ini /etc/ckan/default/ckan.ini
@@ -98,14 +101,14 @@ ENV CKAN_ADMIN_PASSWORD=${CKAN_ADMIN_PASSWORD}
 
 # Install CKAN and plugins, configure plugins
 RUN ckan-pip3 install -U pip && \
-    ckan-pip3 install setuptools==44.1.0 && \
+    ckan-pip3 install setuptools-scm==7.1.0 && \
     ckan-pip3 install --upgrade pip && \
     ckan-pip3 install wheel && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}#egg=ckan[requirements]" && \
     ckan-pip3 install uwsgi && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-pages@${CKAN_PAGES_PLUGIN_VERSION}#egg=ckanext-pages" && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}#egg=ckanext-scheming" && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/ckanext-cd2_theme@${CKAN_CD2_THEME_VERSION}#egg=ckanext-cd2-theme" && \
+    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-ckan-theme@YDA-6221-docker-setup-upgrade#egg=ckanext-cd2-theme" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-config@${CKAN_CD2_CONFIG_VERSION}#egg=ckanext-cd2_config" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
     ckan-pip3 install -e "git+https://github.com/${CKAN_PYOAI_REPO}@${CKAN_PYOAI_VERSION}#egg=pyoai" && \
