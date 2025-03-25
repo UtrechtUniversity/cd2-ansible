@@ -73,7 +73,8 @@ ENV CKAN_CD2_CONFIG_VERSION=v1.0.1
 ENV CKAN_MSL_UTIL_VERSION=1.1.0
 ENV CKAN_CD2_THEME_VERSION=v1.0.2
 ENV CKAN_OAIPMH_SERVER_PLUGIN_REPO=UtrechtUniversity/ckanext-oaipmh-server
-ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=3fc2b5cd7443f71a631a71c16cb3228a17adfe8d
+ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=YDA-6221-docker-setup-upgrade
+#ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=3fc2b5cd7443f71a631a71c16cb3228a17adfe8d
 ENV CKAN_CD2_THEME_CSS_LESS="/usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/less/main.less"
 ENV CKAN_CD2_THEME_CSS_CUSTOM="/usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/fanstatic/cd2_custom.css"
 
@@ -108,7 +109,7 @@ RUN ckan-pip3 install -U pip && \
     ckan-pip3 install uwsgi && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-pages@${CKAN_PAGES_PLUGIN_VERSION}#egg=ckanext-pages" && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}#egg=ckanext-scheming" && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-ckan-theme@YDA-6221-docker-setup-upgrade#egg=ckanext-cd2-theme" && \
+    # ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-ckan-theme@YDA-6221-docker-setup-upgrade#egg=ckanext-cd2-theme" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-config@${CKAN_CD2_CONFIG_VERSION}#egg=ckanext-cd2_config" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
     ckan-pip3 install -e "git+https://github.com/${CKAN_PYOAI_REPO}@${CKAN_PYOAI_VERSION}#egg=pyoai" && \
@@ -117,7 +118,7 @@ RUN ckan-pip3 install -U pip && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
     chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH $COVERAGE_DIR && \
     ln -sf /usr/lib/ckan/default/src/ckanext-cd2-config/ckanext/cd2_config/config/schema.xml /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \
-    lessc ${CKAN_CD2_THEME_CSS_LESS} ${CKAN_CD2_THEME_CSS_CUSTOM} && \
+    # lessc ${CKAN_CD2_THEME_CSS_LESS} ${CKAN_CD2_THEME_CSS_CUSTOM} && \
     perl -n -i.bak -e 'print unless /defaultSearchField/ or /solrQueryParser/' /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
 
 ADD ./files/cd2-logo.png ${CKAN_CD2_LOGO_PATH_PREFIX}/${CKAN_CD2_LOGO_RELPATH}

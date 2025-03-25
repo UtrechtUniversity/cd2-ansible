@@ -44,6 +44,7 @@ fi
 if test -f "$CKAN_INIT_STATUS_FILE"
 then echo "Configuration and database already initialized."
 else echo "Initializing configuration ..."
+     ## TODO replace this
      export BEAKER_SESSION_SECRET=$(openssl rand -base64 32)
      export SECRET_TOKEN_VALUE=$(openssl rand -base64 32)
      export APP_INSTANCE_UUID=$(uuidgen --name "$CD2_HOST" --namespace "@url" --sha1)
