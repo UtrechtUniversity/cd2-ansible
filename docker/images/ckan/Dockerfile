@@ -6,6 +6,7 @@ LABEL org.opencontainers.image.authors="Yoda team"
 
 # Set timezone
 ENV TZ=UTC
+RUN apt-get update && apt-get install -y tzdata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Setting the locale
@@ -24,10 +25,10 @@ RUN apt-get -q -y update \
     && add-apt-repository -y ppa:deadsnakes/ppa \
     && apt-get -q -y update \
     && apt-get -q -y install \
-        python3.9 \
-        python3.9-dev \
+        python3.10 \
+        python3-dev \
         python3-pip \
-        python3.9-venv \
+        python3-venv \
         python3-wheel \
         libpq-dev \
         python3-pastescript \
@@ -51,6 +52,8 @@ RUN apt-get -q -y update \
         uuid-runtime \
         sudo \
         vim  \
+        libmagic1 \
+        libmagic-dev \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/* \
     && npm install less -g
@@ -87,7 +90,7 @@ ARG CKAN_SITE_URL
 
 # Setup virtual environment for CKAN
 RUN mkdir -p $CKAN_VENV $CKAN_CONFIG/default && \
-    python3.9 -m venv $CKAN_VENV && \
+    python3 -m venv $CKAN_VENV && \
     ln -s $CKAN_VENV/bin/pip3 /usr/local/bin/ckan-pip3 &&\
     ln -s $CKAN_VENV/bin/ckan /usr/local/bin/ckan
 ADD ckan.ini /etc/ckan/default/ckan.ini
