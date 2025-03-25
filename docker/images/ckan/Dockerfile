@@ -21,9 +21,6 @@ RUN update-locale LANG=${LC_ALL}
 # Install required system packages
 RUN apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
-    && apt-get -q -y install software-properties-common \
-    && add-apt-repository -y ppa:deadsnakes/ppa \
-    && apt-get -q -y update \
     && apt-get -q -y install \
         python3.10 \
         python3-dev \
