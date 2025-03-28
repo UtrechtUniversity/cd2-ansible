@@ -109,7 +109,7 @@ RUN ckan-pip3 install -U pip && \
     ckan-pip3 install uwsgi && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-pages@${CKAN_PAGES_PLUGIN_VERSION}#egg=ckanext-pages" && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}#egg=ckanext-scheming" && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-ckan-theme@YDA-6221-docker-setup-upgrade#egg=ckanext-cd2-theme" && \
+    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-ckan-theme@${CKAN_CD2_THEME_VERSION}#egg=ckanext-cd2-theme" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-config@${CKAN_CD2_CONFIG_VERSION}#egg=ckanext-cd2_config" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
     ckan-pip3 install -e "git+https://github.com/${CKAN_PYOAI_REPO}@${CKAN_PYOAI_VERSION}#egg=pyoai" && \
