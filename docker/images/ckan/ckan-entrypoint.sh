@@ -45,10 +45,8 @@ if test -f "$CKAN_INIT_STATUS_FILE"
 then echo "Configuration and database already initialized."
 else echo "Initializing configuration ..."
      ## TODO replace this
-     export BEAKER_SESSION_SECRET=$(openssl rand -base64 32)
      export SECRET_TOKEN_VALUE=$(openssl rand -base64 32)
      export APP_INSTANCE_UUID=$(uuidgen --name "$CD2_HOST" --namespace "@url" --sha1)
-     perl -pi.bak -e '$beaker_session_secret=$ENV{BEAKER_SESSION_SECRET}; s/BEAKER_SESSION_SECRET/$beaker_session_secret/ge' "$CKAN_CONFIG_FILE"
      perl -pi.bak -e '$secret_token=$ENV{SECRET_TOKEN_VALUE}; s/SECRET_TOKEN_VALUE/$secret_token/ge' "$CKAN_CONFIG_FILE"
      perl -pi.bak -e '$app_instance_uuid=$ENV{APP_INSTANCE_UUID}; s/APP_INSTANCE_UUID/$app_instance_uuid/ge' "$CKAN_CONFIG_FILE"
      perl -pi.bak -e '$ckan_database_password=$ENV{CKAN_DATABASE_PASSWORD}; s/CKAN_DATABASE_PASSWORD/$ckan_database_password/ge' "$CKAN_CONFIG_FILE"
