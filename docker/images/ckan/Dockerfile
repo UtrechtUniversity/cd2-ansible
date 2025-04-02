@@ -53,7 +53,6 @@ RUN apt-get -q -y update \
         libmagic-dev \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/* \
-    && npm install less -g
 
 # Define environment variables
 ENV CKAN_HOME /usr/lib/ckan
@@ -77,8 +76,6 @@ ENV CKAN_CD2_THEME_VERSION=YDA-6221-docker-setup-upgrade
 ENV CKAN_OAIPMH_SERVER_PLUGIN_REPO=UtrechtUniversity/ckanext-oaipmh-server
 ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=YDA-6221-docker-setup-upgrade
 #ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=3fc2b5cd7443f71a631a71c16cb3228a17adfe8d
-ENV CKAN_CD2_THEME_CSS_LESS="/usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/less/main.less"
-ENV CKAN_CD2_THEME_CSS_CUSTOM="/usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/fanstatic/cd2_custom.css"
 
 # Create storage path
 RUN mkdir -p $CKAN_STORAGE_PATH/webassets $CKAN_STORAGE_PATH/storage && \
@@ -120,7 +117,6 @@ RUN ckan-pip3 install -U pip && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
     chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH $COVERAGE_DIR && \
     ln -sf /usr/lib/ckan/default/src/ckanext-cd2-config/ckanext/cd2_config/config/schema.xml /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \
-    lessc ${CKAN_CD2_THEME_CSS_LESS} ${CKAN_CD2_THEME_CSS_CUSTOM} && \
     perl -n -i.bak -e 'print unless /defaultSearchField/ or /solrQueryParser/' /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
 
 ADD ./files/cd2-logo.png ${CKAN_CD2_LOGO_PATH_PREFIX}/${CKAN_CD2_LOGO_RELPATH}
