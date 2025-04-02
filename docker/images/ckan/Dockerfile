@@ -52,7 +52,7 @@ RUN apt-get -q -y update \
         libmagic1 \
         libmagic-dev \
     && apt-get -q clean \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/*
 
 # Define environment variables
 ENV CKAN_HOME /usr/lib/ckan
