@@ -59,7 +59,7 @@ ENV CKAN_HOME /usr/lib/ckan
 ENV CKAN_VENV $CKAN_HOME/default
 ENV CKAN_CONFIG /etc/ckan
 ENV CKAN_STORAGE_PATH=/ckanstorage
-ENV CKAN_VERSION=2.11.0
+ENV CKAN_VERSION=2.11.3
 ENV CKAN_CD2_LOGO_PATH_PREFIX=/usr/lib/ckan/default/src/ckan/ckan/public
 ENV CKAN_CD2_LOGO_RELPATH=base/images/cd2-logo.png
 # Extensions, plugins
