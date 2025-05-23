@@ -63,7 +63,9 @@ ENV CKAN_VERSION=2.11.3
 ENV CKAN_CD2_LOGO_PATH_PREFIX=/usr/lib/ckan/default/src/ckan/ckan/public
 ENV CKAN_CD2_LOGO_RELPATH=base/images/cd2-logo.png
 # Extensions, plugins
-ENV CKAN_PAGES_PLUGIN_VERSION=master
+## Pin pages plugin to master version of April 2025, since latest official release
+## is quite old.
+ENV CKAN_PAGES_PLUGIN_VERSION=4b5f0f439554235972c669574ed8cab3c2279add
 ENV CKAN_SCHEMING_VERSION=release-3.0.0
 ENV CKAN_PYOAI_REPO=EUDAT-B2FIND/pyoai
 ENV CKAN_PYOAI_VERSION=c820990bad0eb1f1267532041f458bc716461ec8
