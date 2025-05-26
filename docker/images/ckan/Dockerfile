@@ -71,6 +71,8 @@ ENV CKAN_PYOAI_REPO=EUDAT-B2FIND/pyoai
 ENV CKAN_PYOAI_VERSION=c820990bad0eb1f1267532041f458bc716461ec8
 # Our plugins
 #ENV CKAN_CD2_CONFIG_VERSION=v1.0.1
+# Please ensure that CD2 config version for Solr and CKAN containers
+# are the same.
 ENV CKAN_CD2_CONFIG_VERSION=YDA-6221-docker-setup-upgrade
 # MSL_UTIL v1.1.0 is not backwards compatible with existing data, because
 # it does not have 'remove_index_fields' fields
