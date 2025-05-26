@@ -7,6 +7,9 @@ LABEL org.opencontainers.image.authors="Yoda team"
 # to be overhauled to match the EPOS-MSL one
 ENV SOLR_CONFIG_DIR="/opt/solr/server/solr/configsets"
 ENV SOLR_VERSION="8.11.3"
+# Please ensure that CD2 config version for Solr and CKAN containers
+# are the same.
+ENV CKAN_CD2_CONFIG_VERSION=YDA-6221-docker-setup-upgrade
 ENV SOLR_ELEVATE_EXAMPLE_DIR="${SOLR_CONFIG_DIR}/sample_techproducts_configs/conf"
 
 # Create a CKAN configset based on the default one
@@ -21,7 +24,9 @@ RUN apt update && \
 
 # Download the cd2-config plugin (for the schema)
 RUN cd /usr/lib && \
-    git clone https://github.com/UtrechtUniversity/cd2-config.git cd2_config
+    git clone https://github.com/UtrechtUniversity/cd2-config.git cd2_config && \
+    cd cd2_config && \
+    git checkout "$CKAN_CD2_CONFIG_VERSION"
 
 # Change the CKAN configset to use the cd2-config schema, and enable Query Elevation
 USER root

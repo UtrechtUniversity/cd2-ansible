@@ -124,16 +124,16 @@ solr_url = http://127.0.0.1:{{ solr_port }}/solr/ckan
 #       Add ``datapusher`` to enable DataPusher
 #		Add ``resource_proxy`` to enable resource proxying and get around the
 #		same origin policy
-#ckan.plugins = stats text_view image_view recline_view
+#ckan.plugins = stats text_view image_view
 {% if ckan_install_oaipmh_server_plugin %}
-ckan.plugins = stats text_view image_view recline_view cd2_theme cd2_config scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields pages oaipmh
+ckan.plugins = stats text_view image_view cd2_theme cd2_config scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields pages oaipmh
 {% else %}
-ckan.plugins = stats text_view image_view recline_view cd2_theme cd2_config scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields pages
+ckan.plugins = stats text_view image_view cd2_theme cd2_config scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields pages
 {% endif %}
 
 # Define which views should be created by default
 # (plugins must be loaded in ckan.plugins)
-ckan.views.default_views = image_view text_view recline_view
+ckan.views.default_views = image_view text_view
 
 # cd2_config settings
 scheming.dataset_schemas      = ckanext.cd2_config:schemas/datasets/cd2_measure.yml ckanext.cd2_config:schemas/datasets/cd2_study.yml
