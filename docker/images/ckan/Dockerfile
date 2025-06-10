@@ -1,11 +1,12 @@
 # This is a locally modified version of the upstream CKAN Dockerfile
 
 # See CKAN docs on installation from Docker Compose on usage
-FROM ubuntu:focal-20210119
+FROM ubuntu:jammy
 LABEL org.opencontainers.image.authors="Yoda team"
 
 # Set timezone
 ENV TZ=UTC
+RUN apt-get update && apt-get install -y tzdata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Setting the locale
@@ -21,7 +22,7 @@ RUN update-locale LANG=${LC_ALL}
 RUN apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
     && apt-get -q -y install \
-        python3.8 \
+        python3.10 \
         python3-dev \
         python3-pip \
         python3-venv \
@@ -48,31 +49,35 @@ RUN apt-get -q -y update \
         uuid-runtime \
         sudo \
         vim  \
+        libmagic1 \
+        libmagic-dev \
     && apt-get -q clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && npm install less -g
+    && rm -rf /var/lib/apt/lists/*
 
 # Define environment variables
 ENV CKAN_HOME /usr/lib/ckan
 ENV CKAN_VENV $CKAN_HOME/default
 ENV CKAN_CONFIG /etc/ckan
 ENV CKAN_STORAGE_PATH=/ckanstorage
-ENV CKAN_VERSION=2.9.11
+ENV CKAN_VERSION=2.11.3
 ENV CKAN_CD2_LOGO_PATH_PREFIX=/usr/lib/ckan/default/src/ckan/ckan/public
 ENV CKAN_CD2_LOGO_RELPATH=base/images/cd2-logo.png
 # Extensions, plugins
-ENV CKAN_PAGES_PLUGIN_VERSION=v0.5.2
-ENV CKAN_SCHEMING_VERSION=release-2.1.0
+## Pin pages plugin to master version of April 2025, since latest official release
+## is quite old.
+ENV CKAN_PAGES_PLUGIN_VERSION=4b5f0f439554235972c669574ed8cab3c2279add
+ENV CKAN_SCHEMING_VERSION=release-3.0.0
 ENV CKAN_PYOAI_REPO=EUDAT-B2FIND/pyoai
 ENV CKAN_PYOAI_VERSION=c820990bad0eb1f1267532041f458bc716461ec8
 # Our plugins
-ENV CKAN_CD2_CONFIG_VERSION=v1.0.1
-ENV CKAN_MSL_UTIL_VERSION=1.0.0
-ENV CKAN_CD2_THEME_VERSION=v1.0.2
+# Please ensure that CD2 config version for Solr and CKAN containers
+# are the same.
+ENV CKAN_CD2_CONFIG_VERSION=v1.0.2
+ENV CKAN_MSL_UTIL_VERSION=1.1.0
+ENV CKAN_CD2_THEME_VERSION=v1.1.0
 ENV CKAN_OAIPMH_SERVER_PLUGIN_REPO=UtrechtUniversity/ckanext-oaipmh-server
-ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=3fc2b5cd7443f71a631a71c16cb3228a17adfe8d
-ENV CKAN_CD2_THEME_CSS_LESS="/usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/less/main.less"
-ENV CKAN_CD2_THEME_CSS_CUSTOM="/usr/lib/ckan/default/src/ckanext-cd2-theme/ckanext/cd2_theme/fanstatic/cd2_custom.css"
+ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=YDA-6221-docker-setup-upgrade
+#ENV CKAN_OAIPMH_SERVER_PLUGIN_VERSION=3fc2b5cd7443f71a631a71c16cb3228a17adfe8d
 
 # Create storage path
 RUN mkdir -p $CKAN_STORAGE_PATH/webassets $CKAN_STORAGE_PATH/storage && \
@@ -98,14 +103,14 @@ ENV CKAN_ADMIN_PASSWORD=${CKAN_ADMIN_PASSWORD}
 
 # Install CKAN and plugins, configure plugins
 RUN ckan-pip3 install -U pip && \
-    ckan-pip3 install setuptools==44.1.0 && \
+    ckan-pip3 install setuptools-scm==7.1.0 && \
     ckan-pip3 install --upgrade pip && \
     ckan-pip3 install wheel && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}#egg=ckan[requirements]" && \
     ckan-pip3 install uwsgi && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-pages@${CKAN_PAGES_PLUGIN_VERSION}#egg=ckanext-pages" && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}#egg=ckanext-scheming" && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/ckanext-cd2_theme@${CKAN_CD2_THEME_VERSION}#egg=ckanext-cd2-theme" && \
+    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-ckan-theme@${CKAN_CD2_THEME_VERSION}#egg=ckanext-cd2-theme" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-config@${CKAN_CD2_CONFIG_VERSION}#egg=ckanext-cd2_config" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
     ckan-pip3 install -e "git+https://github.com/${CKAN_PYOAI_REPO}@${CKAN_PYOAI_VERSION}#egg=pyoai" && \
@@ -114,7 +119,6 @@ RUN ckan-pip3 install -U pip && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
     chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH $COVERAGE_DIR && \
     ln -sf /usr/lib/ckan/default/src/ckanext-cd2-config/ckanext/cd2_config/config/schema.xml /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \
-    lessc ${CKAN_CD2_THEME_CSS_LESS} ${CKAN_CD2_THEME_CSS_CUSTOM} && \
     perl -n -i.bak -e 'print unless /defaultSearchField/ or /solrQueryParser/' /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
 
 ADD ./files/cd2-logo.png ${CKAN_CD2_LOGO_PATH_PREFIX}/${CKAN_CD2_LOGO_RELPATH}
