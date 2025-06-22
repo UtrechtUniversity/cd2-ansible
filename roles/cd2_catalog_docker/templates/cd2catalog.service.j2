@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+[Unit]
+Description=CD2 catalog service
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+User={{ cd2_catalog_user }}
+Group= {{ cd2_catalog_user }}
+WorkingDirectory=/home/{{ cd2_catalog_user }}/cd2-ansible/docker
+ExecStart=/usr/bin/docker compose up --no-color --no-recreate
+ExecStop=/usr/bin/docker compose down
+TimeoutStartSec=0
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

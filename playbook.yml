@@ -18,10 +18,5 @@
   become: true
   roles:
     - common
-    - { role: acme_certificates, when: catalog_environment == "testing" }
-    - certificates
-    - nginx
-    - postgresql
-    - solr
-    - redis
-    - ckan
+    - docker_compose
+    - cd2_catalog_docker
