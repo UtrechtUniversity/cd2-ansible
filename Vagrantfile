@@ -6,6 +6,7 @@
 # Configuration variables.
 VAGRANT_DEFAULT_PROVIDER= "libvirt"
 VAGRANTFILE_API_VERSION = "2"
+ENV['VAGRANT_DEFAULT_PROVIDER'] = "libvirt"
 
 BOX = 'almalinux/9'
 GUI = false
