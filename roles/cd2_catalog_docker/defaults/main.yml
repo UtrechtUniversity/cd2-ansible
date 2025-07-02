@@ -12,6 +12,8 @@ cd2_catalog_host_name: cd2.ckan
 cd2_catalog_host_ip: 127.0.0.1
 cd2_catalog_host_port: 18443
 
+cd2_catalog_ckan_uwsgi_num_workers: 2
+
 cd2_catalog_postgresql_password: ckan
 
 # MTA role can be either "mailpit" or "postfix"

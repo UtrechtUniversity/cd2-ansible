@@ -33,6 +33,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - CD2_HOST=${CD2_HOST}
       - CD2_HOST_PORT=${CD2_HOST_PORT}
+      - CKAN_UWSGI_NUM_WORKERS=${CKAN_UWSGI_NUM_WORKERS}
     volumes:
       - ckan_config:/etc/ckan
       - ckan_home:/usr/lib/ckan

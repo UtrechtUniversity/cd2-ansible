@@ -85,6 +85,7 @@ RUN mkdir -p $CKAN_STORAGE_PATH/webassets $CKAN_STORAGE_PATH/storage && \
 
 # Build-time variables specified by docker-compose.yml / .env
 ARG CKAN_SITE_URL
+ARG CKAN_UWSGI_NUM_WORKERS
 
 # Setup virtual environment for CKAN
 RUN mkdir -p $CKAN_VENV $CKAN_CONFIG/default && \

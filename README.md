@@ -104,6 +104,7 @@ The main Ansible configuration parameters are:
 |cd2_catalog_cert_mode                      | Currently supported modes: selfsigned or static                      |
 |cd2_catalog_static_cert                    | TLS certificate for reverse proxy (if static mode is selected)       |
 |cd2_catalog_static_cert_key                | TLS certificate key for rev proxy (if static mode is selected)       |
+|cd2_catalog_ckan_uwsgi_num_workers         | Number of UWSGI workers for CKAN (default: 2)                        |
 
 ## License
 
