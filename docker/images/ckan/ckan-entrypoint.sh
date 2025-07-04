@@ -34,6 +34,7 @@ check_port redis 6379
 
 ## Initialize CKAN config, database and admin account
 CKAN_CONFIG_FILE=/etc/ckan/default/ckan.ini
+CKAN_UWSGI_CONFIG_FILE=/etc/ckan/default/ckan-uwsgi.ini
 CKAN_INIT_STATUS_FILE=/etc/ckan/default/.ckan_initialized
 
 if [ "$CD2_HOST_PORT" = "443" ]
@@ -51,6 +52,8 @@ else echo "Initializing configuration ..."
      perl -pi.bak -e '$app_instance_uuid=$ENV{APP_INSTANCE_UUID}; s/APP_INSTANCE_UUID/$app_instance_uuid/ge' "$CKAN_CONFIG_FILE"
      perl -pi.bak -e '$ckan_database_password=$ENV{CKAN_DATABASE_PASSWORD}; s/CKAN_DATABASE_PASSWORD/$ckan_database_password/ge' "$CKAN_CONFIG_FILE"
      perl -pi.bak -e '$ckan_site_url=$ENV{CKAN_SITE_URL}; s/CKAN_SITE_URL/$ckan_site_url/ge' "$CKAN_CONFIG_FILE"
+     perl -pi.bak -e '$ckan_uwsgi_num_workers=$ENV{CKAN_UWSGI_NUM_WORKERS}; s/CKAN_UWSGI_NUM_WORKERS/$ckan_uwsgi_num_workers/ge' "$CKAN_UWSGI_CONFIG_FILE"
+
      echo "Initializing database ..."
      /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" db init
      /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" user add ckanadmin password="$CKAN_ADMIN_PASSWORD" email=ckanadmin@localhost name=ckanadmin
