@@ -1,0 +1,85 @@
+---
+# copyright Utrecht University
+
+- name: Ensure group for CD2 docker setup exists
+  ansible.builtin.group:
+    name: "{{ cd2_catalog_user }}"
+
+
+- name: Ensure user for CD2 docker setup exists
+  ansible.builtin.user:
+    name: "{{ cd2_catalog_user }}"
+    group: "{{ cd2_catalog_user }}"
+    groups: docker
+    create_home: true
+
+
+- name: Check out CD2 repo with Docker Compose setup
+  become_user: "{{ cd2_catalog_user }}"
+  become: true
+  ansible.builtin.git:
+    repo: "https://github.com/UtrechtUniversity/cd2-ansible.git"
+    dest: "/home/{{ cd2_catalog_user }}/cd2-ansible"
+    version: "{{ cd2_catalog_branch }}"
+    force: true
+
+
+- name: Check that cert_mode is set to valid mode
+  ansible.builtin.fail:
+    msg: "cert_mode should be set to either selfsigned or static"
+  when: cd2_catalog_cert_mode not in ["selfsigned", "static"]
+
+
+- name: Upload static certificate
+  ansible.builtin.copy:
+    dest: "/home/{{ cd2_catalog_user }}/cd2-ansible/docker/import-certificates/cd2-catalog.pem"
+    content: '{{ cd2_catalog_static_cert }}'
+    owner: "{{ cd2_catalog_user }}"
+    group: "{{ cd2_catalog_user }}"
+    mode: '0644'
+  when: cd2_catalog_cert_mode == "static"
+
+
+- name: Upload static certificate key
+  ansible.builtin.copy:
+    dest: "/home/{{ cd2_catalog_user }}/cd2-ansible/docker/import-certificates/cd2-catalog.key"
+    content: '{{ cd2_catalog_static_cert_key }}'
+    owner: "{{ cd2_catalog_user }}"
+    group: "{{ cd2_catalog_user }}"
+    mode: '0644'
+  when: cd2_catalog_cert_mode == "static"
+
+
+- name: Install configuration Docker Compose setup
+  ansible.builtin.template:
+    src: env.j2
+    dest: "/home/{{ cd2_catalog_user }}/cd2-ansible/docker/.env"
+    owner: '{{ cd2_catalog_user }}'
+    group: '{{ cd2_catalog_user }}'
+    mode: '0644'
+
+
+- name: Open TCP port for CD2 catalog
+  ansible.posix.firewalld:
+    port: "{{ cd2_catalog_host_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  become: true
+
+
+- name: Create CD2 catalog systemd unit file
+  ansible.builtin.template:
+    src: cd2catalog.service.j2
+    dest: /etc/systemd/system/cd2catalog.service
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Enable and start CD2 catalog service
+  ansible.builtin.service:
+    name: cd2catalog
+    enabled: true
+    state: started
+    daemon_reload: true

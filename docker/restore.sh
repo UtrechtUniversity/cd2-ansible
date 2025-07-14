@@ -18,6 +18,8 @@ EOF
 
 echo "Restoring CKAN local settings ..."
 gunzip -c "${STAGINGDIR}/ckan-settings.tar.gz" | docker exec -i ckan /bin/bash -c "tar xv -C /etc/ckan"
+echo "Restoring CKAN storage ..."
+gunzip -c "${STAGINGDIR}/ckan-storage.tar.gz" | docker exec -i ckan /bin/bash -c "tar xv -C /"
 echo "Restoring CKAN database ..."
 echo "$RESET_CKAN_DB" |  docker exec -i ckan /bin/bash -c "PGPASSWORD=\"\$POSTGRES_PASSWORD\" psql -d ckan_default -h db -U ckan"
 gunzip -c "${STAGINGDIR}/ckan-db.sql.gz" | docker exec -i ckan /bin/bash -c "PGPASSWORD=\"\$POSTGRES_PASSWORD\" psql -d ckan_default -h db -U ckan"
