@@ -85,6 +85,7 @@ RUN mkdir -p $CKAN_STORAGE_PATH/webassets $CKAN_STORAGE_PATH/storage && \
 
 # Build-time variables specified by docker-compose.yml / .env
 ARG CKAN_SITE_URL
+ARG CKAN_UWSGI_NUM_WORKERS
 
 # Setup virtual environment for CKAN
 RUN mkdir -p $CKAN_VENV $CKAN_CONFIG/default && \
@@ -117,7 +118,7 @@ RUN ckan-pip3 install -U pip && \
     ckan-pip3 install -e "git+https://github.com/${CKAN_OAIPMH_SERVER_PLUGIN_REPO}@${CKAN_OAIPMH_SERVER_PLUGIN_VERSION}#egg=ckanext-oaipmh-server" && \
     ckan-pip3 install -r "https://raw.githubusercontent.com/${CKAN_OAIPMH_SERVER_PLUGIN_REPO}/${CKAN_OAIPMH_SERVER_PLUGIN_VERSION}/requirements.txt" && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
-    chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH $COVERAGE_DIR && \
+    chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG && \
     ln -sf /usr/lib/ckan/default/src/ckanext-cd2-config/ckanext/cd2_config/config/schema.xml /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \
     perl -n -i.bak -e 'print unless /defaultSearchField/ or /solrQueryParser/' /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
 

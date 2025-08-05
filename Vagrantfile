@@ -4,11 +4,11 @@
 # vi: set ft=ruby :
 
 # Configuration variables.
+VAGRANT_DEFAULT_PROVIDER= "libvirt"
 VAGRANTFILE_API_VERSION = "2"
-
 ENV['VAGRANT_DEFAULT_PROVIDER'] = "libvirt"
 
-BOX = 'generic/ubuntu2004'
+BOX = 'almalinux/9'
 GUI = false
 CPU = 2
 RAM = 2048

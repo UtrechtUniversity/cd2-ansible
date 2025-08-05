@@ -1,0 +1,35 @@
+---
+# copyright Utrecht University
+
+cd2_catalog_user: cd2catalog
+cd2_catalog_branch: master
+
+cd2_catalog_ckan_site_id: default
+cd2_catalog_admin_password: testtest
+cd2_catalog_ckan_database_password: defaultpassworda
+
+cd2_catalog_host_name: cd2.ckan
+cd2_catalog_host_ip: 127.0.0.1
+cd2_catalog_host_port: 18443
+
+cd2_catalog_ckan_uwsgi_num_workers: 2
+
+cd2_catalog_postgresql_password: ckan
+
+# MTA role can be either "mailpit" or "postfix"
+cd2_catalog_mta_role: mailpit
+
+cd2_catalog_postfix_relayhost_fqdn: notspecified
+cd2_catalog_postfix_relayhost_port: 25
+cd2_catalog_postfix_relayhost_username: changeme
+cd2_catalog_postfix_relayhost_password: changeme
+cd2_catalog_postfix_relayhost_auth_enabled: "yes"
+cd2_catalog_postfix_relayhost_tls_enabled: "yes"
+cd2_catalog_postfix_myhostname: changeme
+cd2_catalog_postfix_origin: changeme
+cd2_catalog_mail_from_address: cd2catalog@changeme.nl
+
+# Cert mode can be static or self-signed
+cd2_catalog_cert_mode: selfsigned
+cd2_catalog_static_cert: notset
+cd2_catalog_static_cert_key: notset
