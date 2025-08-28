@@ -71,7 +71,7 @@ services:
     container_name: solr
     image: ghcr.io/utrechtuniversity/cd2-cat-solr:latest
     volumes:
-      - solr_data:/opt/solr/server/solr/ckan/data
+      - solr_data:/var/solr
 
   redis:
     container_name: redis
