@@ -46,6 +46,8 @@ services:
   nginx:
     container_name: nginx
     image: ghcr.io/utrechtuniversity/cd2-cat-nginx:latest
+    depends_on:
+      - ckan
     environment:
       - CD2_HOST=${CD2_HOST}
       - CD2_HOST_PORT=${CD2_HOST_PORT}
