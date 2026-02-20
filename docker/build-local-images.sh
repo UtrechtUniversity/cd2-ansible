@@ -6,7 +6,7 @@ cd images
 for image in ckan nginx solr mta
 do cd "$image"
    echo "Building image $image ..."
-   ./build.sh
+   ./build.sh $*
    cd ..
 done
 
