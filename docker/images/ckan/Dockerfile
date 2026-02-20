@@ -107,15 +107,15 @@ RUN ckan-pip3 install -U pip && \
     ckan-pip3 install setuptools-scm==7.1.0 && \
     ckan-pip3 install --upgrade pip && \
     ckan-pip3 install wheel && \
-    ckan-pip3 install -e "git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}#egg=ckan[requirements]" && \
+    ckan-pip3 install -e "ckan[requirements] @ git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}" && \
     ckan-pip3 install uwsgi && \
-    ckan-pip3 install -e "git+https://github.com/ckan/ckanext-pages@${CKAN_PAGES_PLUGIN_VERSION}#egg=ckanext-pages" && \
-    ckan-pip3 install -e "git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}#egg=ckanext-scheming" && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-ckan-theme@${CKAN_CD2_THEME_VERSION}#egg=ckanext-cd2-theme" && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/cd2-config@${CKAN_CD2_CONFIG_VERSION}#egg=ckanext-cd2_config" && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
-    ckan-pip3 install -e "git+https://github.com/${CKAN_PYOAI_REPO}@${CKAN_PYOAI_VERSION}#egg=pyoai" && \
-    ckan-pip3 install -e "git+https://github.com/${CKAN_OAIPMH_SERVER_PLUGIN_REPO}@${CKAN_OAIPMH_SERVER_PLUGIN_VERSION}#egg=ckanext-oaipmh-server" && \
+    ckan-pip3 install -e "ckanext-pages @ git+https://github.com/ckan/ckanext-pages@${CKAN_PAGES_PLUGIN_VERSION}" && \
+    ckan-pip3 install -e "ckanext-scheming @ git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}" && \
+    ckan-pip3 install -e "ckanext-cd2-theme @ git+https://github.com/UtrechtUniversity/cd2-ckan-theme@${CKAN_CD2_THEME_VERSION}" && \
+    ckan-pip3 install -e "ckanext-cd2_config @ git+https://github.com/UtrechtUniversity/cd2-config@${CKAN_CD2_CONFIG_VERSION}" && \
+    ckan-pip3 install -e "ckanext-msl_ckan_util @ git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}" && \
+    ckan-pip3 install -e "pyoai @ git+https://github.com/${CKAN_PYOAI_REPO}@${CKAN_PYOAI_VERSION}" && \
+    ckan-pip3 install -e "ckanext-oaipmh-server @ git+https://github.com/${CKAN_OAIPMH_SERVER_PLUGIN_REPO}@${CKAN_OAIPMH_SERVER_PLUGIN_VERSION}" && \
     ckan-pip3 install -r "https://raw.githubusercontent.com/${CKAN_OAIPMH_SERVER_PLUGIN_REPO}/${CKAN_OAIPMH_SERVER_PLUGIN_VERSION}/requirements.txt" && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
     chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG && \
