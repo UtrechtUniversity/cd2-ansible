@@ -23,7 +23,7 @@ jobs:
       id: extract_branch
 
     - name: Check out CD2 catalog repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         path: cd2-ansible
         repository: UtrechtUniversity/cd2-ansible
