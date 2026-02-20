@@ -9,5 +9,3 @@ skip_list:
   - no-handler
   - var-naming[no-role-prefix]
   - schema[meta]
-
-parseable: true
