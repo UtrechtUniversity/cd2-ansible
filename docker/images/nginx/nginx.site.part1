@@ -61,9 +61,12 @@ server {
     # End of fragment for blocking AI bots
 
     location / {
-        proxy_pass http://ckan:8080/;
-        proxy_set_header Host PUT_HOST_HEADER_HERE;
+        proxy_pass http://anubis:8080/;
         proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Host PUT_HOST_HEADER_HERE;
+        PUT_REAL_IP_DIRECTIVE_HERE
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Http-Version $server_protocol;
         proxy_cache cache;
         proxy_cache_bypass $cookie_auth_tkt;
         proxy_no_cache $cookie_auth_tkt;
@@ -71,4 +74,22 @@ server {
         proxy_cache_key $host$scheme$proxy_host$request_uri;
         # In emergency comment out line to force caching
         # proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
+
+        location ~ ^/\.within\.website/x/cmd/anubis/static/img/(pensive|happy|reject)\.webp$ {
+            # Use rewrite "last" because we need to change locations to the static
+            # content location.
+            rewrite ^ /anubis-static-content/cd2-logo.png last;
+        }
+
+        # Need to set accepted encodings to none in order to make sub_filter rules below
+        # work reliably.
+        proxy_set_header Accept-Encoding "";
+        sub_filter 'the scourge of AI companies aggressively scraping websites' 'aggressive web scrapers';
+        sub_filter 'Mascot design by <a href="https://bsky.app/profile/celphase.bsky.social">CELPHASE</a>.' '';
+
+    }
+
+    location /anubis-static-content/ {
+        alias /etc/anubis/static-content/;
+        autoindex off;
     }

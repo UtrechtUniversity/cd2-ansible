@@ -41,5 +41,12 @@ else export HOST_HEADER="${CD2_HOST}:${CD2_HOST_PORT}"
 fi
 perl -pi.bak -e '$host_header=$ENV{HOST_HEADER}; s/PUT_HOST_HEADER_HERE/"$host_header"/ge' "/etc/nginx/conf.d/nginx.conf"
 
+# Configure configuration for determing real IP address of request
+if [ "$CD2_BEHIND_LOADBALANCER" -eq "1" ]
+then export REALIPCONFIG="real_ip_header X-Forwarded-For;"
+else export REALIPCONFIG="proxy_set_header X-Real-IP \$remote_addr;"
+fi
+perl -pi.bak -e '$realipconfig=$ENV{REALIPCONFIG}; s/PUT_REAL_IP_DIRECTIVE_HERE/$realipconfig/ge' "/etc/nginx/conf.d/nginx.conf"
+
 ## Run Nginx
 nginx -g "daemon off;"

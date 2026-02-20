@@ -8,6 +8,7 @@ volumes:
   pg_data:
   solr_data:
   nginx_config:
+  anubis_bbolt:
 
 services:
   ckan:
@@ -48,11 +49,13 @@ services:
     image: ghcr.io/utrechtuniversity/cd2-cat-nginx:latest
     depends_on:
       - ckan
+      - anubis
     environment:
       - CD2_HOST=${CD2_HOST}
       - CD2_HOST_PORT=${CD2_HOST_PORT}
       - CKAN_SITE_URL=${CKAN_SITE_URL}
       - CD2_HOST_IP=${CD2_HOST_IP}
+      - CD2_BEHIND_LOADBALANCER=${CD2_BEHIND_LOADBALANCER}
       - MTA_ROLE=${MTA_ROLE}
     ports:
       - "${CD2_HOST_IP}:${CD2_HOST_PORT}:443"
@@ -61,6 +64,28 @@ services:
     volumes:
       - nginx_config:/etc/nginx/conf.d
       - ./import-certificates:/etc/import-certificates
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "3g"
+
+  anubis:
+    container_name: anubis
+    image: ghcr.io/utrechtuniversity/cd2-cat-anubis:latest
+    depends_on:
+      - ckan
+    environment:
+      - ANUBIS_ED25519_PRIVATE_KEY=${ANUBIS_ED25519_PRIVATE_KEY}
+      - CD2_HOST=${CD2_HOST}
+      - CD2_HOST_PORT=${CD2_HOST_PORT}
+    volumes:
+      - anubis_bbolt:/anubis_bbolt
+    healthcheck:
+      test: ["CMD", "/usr/bin/anubis", "--healthcheck"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+      start_period: 500ms
     logging:
       driver: "json-file"
       options:
