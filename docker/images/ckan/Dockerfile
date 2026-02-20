@@ -103,10 +103,9 @@ ENV CD2_HOST=${CD2_HOST}
 ENV CKAN_ADMIN_PASSWORD=${CKAN_ADMIN_PASSWORD}
 
 # Install CKAN and plugins, configure plugins
-RUN ckan-pip3 install -U pip && \
+RUN ckan-pip3 install -U pip==26.0.1 && \
     ckan-pip3 install setuptools-scm==7.1.0 && \
-    ckan-pip3 install --upgrade pip && \
-    ckan-pip3 install wheel && \
+    ckan-pip3 install wheel==0.46.3 && \
     ckan-pip3 install -e "ckan[requirements] @ git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}" && \
     ckan-pip3 install uwsgi && \
     ckan-pip3 install -e "ckanext-pages @ git+https://github.com/ckan/ckanext-pages@${CKAN_PAGES_PLUGIN_VERSION}" && \
