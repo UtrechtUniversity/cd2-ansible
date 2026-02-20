@@ -1,5 +1,7 @@
 exclude_paths:
   - .github/
+  - docker/
+  - vagrant/
 
 skip_list:
   - experimental
