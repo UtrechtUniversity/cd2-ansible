@@ -11,6 +11,7 @@ cd2_catalog_ckan_database_password: defaultpassworda
 cd2_catalog_host_name: cd2.ckan
 cd2_catalog_host_ip: 127.0.0.1
 cd2_catalog_host_port: 18443
+cd2_catalog_behind_loadbalancer: 0
 
 cd2_catalog_ckan_uwsgi_num_workers: 2
 
@@ -33,3 +34,8 @@ cd2_catalog_mail_from_address: cd2catalog@changeme.nl
 cd2_catalog_cert_mode: selfsigned
 cd2_catalog_static_cert: notset
 cd2_catalog_static_cert_key: notset
+
+# This key is an "insecure" private key we offer for use in development instances.
+# If you use this instance for anything other than development, you should create your own key.
+# openssl rand -hex 32
+cd2_catalog_anubis_ed25519_private_key: 6df19fb7373c1582789d279218147adce2422b80c0fd3389f52d390490e338e9

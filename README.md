@@ -105,6 +105,8 @@ The main Ansible configuration parameters are:
 |cd2_catalog_static_cert                    | TLS certificate for reverse proxy (if static mode is selected)       |
 |cd2_catalog_static_cert_key                | TLS certificate key for rev proxy (if static mode is selected)       |
 |cd2_catalog_ckan_uwsgi_num_workers         | Number of UWSGI workers for CKAN (default: 2)                        |
+|cd2_catalog_anubis_ed25519_private_key     | Private key for Anubis. If you run the application in production, randomly generate a key using `openssl rand -hex 32` |
+|cd2_catalog_behind_loadbalancer            | Set to 1 if catalog is running behind loadbalancer, otherwise 0 (default: 0) |
 
 ## License
 
