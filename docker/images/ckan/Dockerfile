@@ -55,9 +55,9 @@ RUN apt-get -q -y update \
     && rm -rf /var/lib/apt/lists/*
 
 # Define environment variables
-ENV CKAN_HOME /usr/lib/ckan
-ENV CKAN_VENV $CKAN_HOME/default
-ENV CKAN_CONFIG /etc/ckan
+ENV CKAN_HOME=/usr/lib/ckan
+ENV CKAN_VENV="$CKAN_HOME/default"
+ENV CKAN_CONFIG=/etc/ckan
 ENV CKAN_STORAGE_PATH=/ckanstorage
 ENV CKAN_VERSION=2.11.4
 ENV CKAN_CD2_LOGO_PATH_PREFIX=/usr/lib/ckan/default/src/ckan/ckan/public
