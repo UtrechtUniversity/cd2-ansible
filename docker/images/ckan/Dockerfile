@@ -99,8 +99,6 @@ ADD ckan-uwsgi.ini /etc/ckan/default/ckan-uwsgi.ini
 
 # Virtual environment binaries/scripts to be used first
 ENV PATH=${CKAN_VENV}/bin:${PATH}
-ENV CD2_HOST=${CD2_HOST}
-ENV CKAN_ADMIN_PASSWORD=${CKAN_ADMIN_PASSWORD}
 
 # Install CKAN and plugins, configure plugins
 RUN ckan-pip3 install -U pip==26.0.1 && \
