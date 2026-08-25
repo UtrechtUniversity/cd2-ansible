@@ -32,7 +32,7 @@
 
 - name: Upload static certificate
   ansible.builtin.copy:
-    dest: "/home/{{ cd2_catalog_user }}/cd2-ansible/docker/import-certificates/cd2-catalog.pem"
+    dest: "/home/{{ cd2_catalog_user }}/cd2-ansible/docker/import-certificates/cd2.pem"
     content: '{{ cd2_catalog_static_cert }}'
     owner: "{{ cd2_catalog_user }}"
     group: "{{ cd2_catalog_user }}"
@@ -42,7 +42,7 @@
 
 - name: Upload static certificate key
   ansible.builtin.copy:
-    dest: "/home/{{ cd2_catalog_user }}/cd2-ansible/docker/import-certificates/cd2-catalog.key"
+    dest: "/home/{{ cd2_catalog_user }}/cd2-ansible/docker/import-certificates/cd2.key"
     content: '{{ cd2_catalog_static_cert_key }}'
     owner: "{{ cd2_catalog_user }}"
     group: "{{ cd2_catalog_user }}"
